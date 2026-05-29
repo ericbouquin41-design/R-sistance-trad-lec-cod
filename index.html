@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResistorPro — Code Couleur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --bg2: #141720;
+  --bg3: #1c2030;
+  --accent: #f5c842;
+  --accent2: #e8a020;
+  --text: #e8eaf0;
+  --text2: #8a8fa8;
+  --text3: #555a72;
+  --border: #252a3a;
+  --success: #3de08a;
+  --error: #f05a5a;
+  --warn: #f5a623;
+  --radius: 12px;
+  --font-mono: 'Space Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+/* GRID BACKGROUND */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:0.4;pointer-events:none;z-index:0}
+
+/* SCREENS */
+.screen{display:none;position:relative;z-index:1;min-height:100vh;padding:2rem 1rem}
+.screen.active{display:flex;flex-direction:column;align-items:center}
+
+/* ===== LOGIN SCREEN ===== */
+#s-login{justify-content:center;gap:2rem}
+.logo{text-align:center}
+.logo h1{font-family:var(--font-mono);font-size:2.2rem;color:var(--accent);letter-spacing:-1px}
+.logo p{color:var(--text2);font-size:.9rem;margin-top:.3rem}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;width:100%;max-width:600px}
+.profile-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:all .2s}
+.profile-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.profile-card .role-icon{font-size:2.5rem;margin-bottom:.8rem}
+.profile-card .role-name{font-weight:600;font-size:1rem}
+.profile-card .role-sub{color:var(--text2);font-size:.8rem;margin-top:.2rem}
+.user-list{width:100%;max-width:600px}
+.user-list h3{color:var(--text2);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;font-family:var(--font-mono)}
+.user-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.8rem 1.2rem;margin-bottom:.5rem;cursor:pointer;display:flex;align-items:center;gap:1rem;transition:all .2s}
+.user-item:hover{border-color:var(--accent);background:var(--bg3)}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.75rem;color:var(--accent)}
+.user-info .name{font-weight:500}
+.user-info .level{color:var(--text2);font-size:.8rem}
+.btn-add{width:100%;padding:.7rem;background:transparent;border:1px dashed var(--border);border-radius:8px;color:var(--text3);cursor:pointer;font-family:var(--font-body);font-size:.9rem;margin-top:.5rem;transition:all .2s}
+.btn-add:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ===== TRAINER DASHBOARD ===== */
+#s-trainer{padding:1.5rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:900px;margin-bottom:2rem}
+.topbar-left{display:flex;align-items:center;gap:1rem}
+.topbar-logo{font-family:var(--font-mono);color:var(--accent);font-size:1.1rem}
+.back-btn{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text2);padding:.4rem .8rem;cursor:pointer;font-size:.85rem;transition:all .2s}
+.back-btn:hover{border-color:var(--accent);color:var(--accent)}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;width:100%;max-width:900px;margin-bottom:2rem}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem}
+.stat-card .stat-label{color:var(--text2);font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;font-family:var(--font-mono);margin-bottom:.5rem}
+.stat-card .stat-value{font-size:1.8rem;font-weight:600;font-family:var(--font-mono);color:var(--accent)}
+.stat-card .stat-sub{color:var(--text2);font-size:.8rem;margin-top:.2rem}
+.section-title{font-family:var(--font-mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:1rem;width:100%;max-width:900px}
+.settings-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:900px;margin-bottom:1.5rem}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:.7rem 0;border-bottom:1px solid var(--border)}
+.settings-row:last-child{border-bottom:none}
+.settings-row label{color:var(--text);font-size:.95rem}
+.settings-row .hint{color:var(--text2);font-size:.8rem;margin-top:.1rem}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:.2s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--text3);border-radius:50%;transition:.2s}
+.toggle input:checked + .toggle-slider{background:var(--accent);border-color:var(--accent)}
+.toggle input:checked + .toggle-slider:before{transform:translateX(20px);background:#000}
+.select-input, .number-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.4rem .8rem;font-family:var(--font-body);font-size:.9rem;cursor:pointer}
+.select-input:focus, .number-input:focus{outline:none;border-color:var(--accent)}
+.students-table{width:100%;max-width:900px;border-collapse:collapse}
+.students-table th{text-align:left;color:var(--text2);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;font-family:var(--font-mono);padding:.7rem 1rem;border-bottom:1px solid var(--border)}
+.students-table td{padding:.8rem 1rem;border-bottom:1px solid var(--border);font-size:.9rem}
+.students-table tr:hover td{background:var(--bg2)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:500;font-family:var(--font-mono)}
+.badge-gold{background:#f5c84233;color:var(--accent)}
+.badge-green{background:#3de08a22;color:var(--success)}
+.badge-red{background:#f05a5a22;color:var(--error)}
+.badge-gray{background:var(--bg3);color:var(--text2)}
+
+/* ===== EXERCISE SCREEN ===== */
+#s-exercise{padding:1rem}
+.ex-topbar{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:800px;margin-bottom:1.5rem}
+.ex-progress{display:flex;align-items:center;gap:.8rem;flex:1;margin:0 1rem}
+.progress-track{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s}
+.progress-label{font-family:var(--font-mono);font-size:.8rem;color:var(--text2);white-space:nowrap}
+.help-btn{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text2);padding:.4rem .9rem;cursor:pointer;font-size:.85rem;transition:all .2s}
+.help-btn:hover{border-color:var(--accent);color:var(--accent)}
+.score-display{font-family:var(--font-mono);font-size:.85rem;color:var(--accent);white-space:nowrap}
+
+/* RESISTOR SVG */
+.resistor-wrap{width:100%;max-width:600px;margin:0 auto 1.5rem}
+.resistor-svg{width:100%;height:auto;filter:drop-shadow(0 4px 20px rgba(245,200,66,0.15))}
+
+/* MODE & TRIES */
+.mode-tag{font-family:var(--font-mono);font-size:.75rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.2rem .7rem;text-align:center;width:fit-content;margin:0 auto .8rem}
+.tries-row{display:flex;gap:.5rem;justify-content:center;margin-bottom:1rem}
+.try-dot{width:10px;height:10px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);transition:all .3s}
+.try-dot.used{background:var(--error);border-color:var(--error)}
+.try-dot.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 6px var(--accent)}
+
+/* QUESTION AREA */
+.question-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.5rem;width:100%;max-width:600px;margin-bottom:1rem}
+.question-text{font-size:1rem;color:var(--text);margin-bottom:1rem;line-height:1.5}
+.value-display{font-family:var(--font-mono);font-size:1.6rem;color:var(--accent);text-align:center;padding:.5rem;letter-spacing:.05em}
+
+/* COLOR PICKER */
+.band-selectors{width:100%;max-width:600px;margin-bottom:1rem}
+.band-row{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem;padding:.6rem .8rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;transition:all .2s}
+.band-row.error-band{border-color:var(--error);background:#f05a5a0a}
+.band-row.correct-band{border-color:var(--success);background:#3de08a0a}
+.band-label{font-family:var(--font-mono);font-size:.75rem;color:var(--text2);width:60px;flex-shrink:0}
+.color-palette{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.color-btn{width:26px;height:26px;border-radius:6px;border:2px solid transparent;cursor:pointer;transition:all .15s;flex-shrink:0;position:relative}
+.color-btn:hover{transform:scale(1.15);z-index:2}
+.color-btn.selected{border-color:#fff;box-shadow:0 0 8px rgba(255,255,255,0.5);transform:scale(1.1)}
+.color-swatch{width:100%;height:100%;border-radius:4px}
+
+/* READ MODE */
+.read-answer{display:flex;flex-direction:column;gap:.8rem;width:100%;max-width:600px;margin-bottom:1rem}
+.read-field{display:flex;align-items:center;gap:.8rem}
+.read-field label{font-size:.9rem;color:var(--text2);width:100px;flex-shrink:0}
+.read-field input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.5rem .9rem;font-family:var(--font-mono);font-size:1rem}
+.read-field input:focus{outline:none;border-color:var(--accent)}
+.read-field input.error-input{border-color:var(--error)}
+.read-field input.correct-input{border-color:var(--success)}
+.tol-select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.5rem .9rem;font-family:var(--font-mono);font-size:.9rem;cursor:pointer;flex:1}
+.tol-select:focus{outline:none;border-color:var(--accent)}
+
+/* FEEDBACK */
+.feedback-box{width:100%;max-width:600px;padding:1rem 1.2rem;border-radius:var(--radius);margin-bottom:1rem;display:none;animation:fadein .3s}
+.feedback-box.visible{display:block}
+.feedback-box.fb-error{background:#f05a5a11;border:1px solid var(--error)}
+.feedback-box.fb-success{background:#3de08a11;border:1px solid var(--success)}
+.feedback-box.fb-warn{background:#f5a62311;border:1px solid var(--warn)}
+.feedback-box p{font-size:.9rem;line-height:1.5}
+.feedback-box strong{display:block;margin-bottom:.3rem;font-size:.95rem}
+
+/* SUBMIT BTN */
+.btn-primary{background:var(--accent);color:#0d0f14;border:none;border-radius:8px;padding:.75rem 2rem;font-family:var(--font-mono);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.05em}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-secondary{background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:8px;padding:.7rem 1.5rem;font-family:var(--font-body);font-size:.9rem;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--text2);color:var(--text)}
+.btn-row{display:flex;gap:.8rem;justify-content:center;width:100%;max-width:600px;margin-top:.5rem;flex-wrap:wrap}
+
+/* ===== HELP PANEL ===== */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;justify-content:center;align-items:flex-start;padding:2rem 1rem;overflow-y:auto}
+.overlay.visible{display:flex}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:720px;position:relative;animation:slidein .25s}
+.panel-close{position:absolute;top:1rem;right:1rem;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.panel-close:hover{color:var(--text);border-color:var(--text2)}
+.panel h2{font-family:var(--font-mono);color:var(--accent);font-size:1rem;margin-bottom:1.2rem}
+.color-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.color-table th{text-align:left;color:var(--text2);padding:.5rem .8rem;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:.75rem;text-transform:uppercase}
+.color-table td{padding:.45rem .8rem;border-bottom:1px solid #ffffff08}
+.color-table tr:hover td{background:var(--bg3)}
+.color-swatch-sm{width:20px;height:20px;border-radius:4px;display:inline-block;vertical-align:middle;border:1px solid rgba(255,255,255,.1)}
+
+/* ===== RESULTS SCREEN ===== */
+#s-results{justify-content:center;padding:2rem 1rem}
+.results-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;width:100%;max-width:600px}
+.results-header{text-align:center;margin-bottom:1.5rem}
+.results-score{font-family:var(--font-mono);font-size:3.5rem;color:var(--accent);line-height:1}
+.results-label{color:var(--text2);margin-top:.3rem;font-size:.9rem}
+.results-meta{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.5rem}
+.meta-item{background:var(--bg3);border-radius:8px;padding:.8rem;text-align:center}
+.meta-item .mv{font-family:var(--font-mono);font-size:1.2rem;color:var(--text);font-weight:700}
+.meta-item .ml{color:var(--text2);font-size:.75rem;margin-top:.2rem}
+.results-breakdown{margin-bottom:1.5rem}
+.breakdown-row{display:flex;align-items:center;gap:.8rem;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-q{color:var(--text2);flex-shrink:0;font-family:var(--font-mono);font-size:.75rem;width:30px}
+.breakdown-val{flex:1;font-family:var(--font-mono)}
+.breakdown-tries{margin-left:auto;display:flex;gap:3px}
+.mini-dot{width:7px;height:7px;border-radius:50%;background:var(--bg3)}
+.mini-dot.used{background:var(--error)}
+.mini-dot.ok{background:var(--success)}
+.xp-gained{text-align:center;padding:1rem;background:#f5c84211;border:1px solid var(--accent);border-radius:8px;margin-bottom:1.5rem}
+.xp-gained .xp-val{font-family:var(--font-mono);font-size:1.5rem;color:var(--accent)}
+.xp-gained .xp-label{color:var(--text2);font-size:.85rem;margin-top:.2rem}
+.level-bar-wrap{margin-top:.5rem}
+.level-bar-track{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-top:.4rem}
+.level-bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width 1s .5s}
+.level-info{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text2);font-family:var(--font-mono)}
+
+/* LANG TOGGLE */
+.lang-toggle{position:fixed;top:1rem;right:1rem;z-index:200;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;display:flex}
+.lang-btn{padding:.3rem .7rem;font-size:.8rem;font-family:var(--font-mono);background:transparent;border:none;color:var(--text2);cursor:pointer;transition:all .2s}
+.lang-btn.active{background:var(--accent);color:#000}
+
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes slidein{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@media(max-width:500px){.color-btn{width:22px;height:22px}.profile-grid{grid-template-columns:1fr 1fr}.results-score{font-size:2.5rem}}
+</style>
+</head>
+<body>
+
+<h2 class="sr-only">ResistorPro — Application d'apprentissage du code couleur des résistances</h2>
+
+<!-- Language Toggle -->
+<div class="lang-toggle">
+  <button class="lang-btn active" onclick="setLang('fr')" id="btn-fr">FR</button>
+  <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+</div>
+
+<!-- ===== SCREEN: LOGIN ===== -->
+<div class="screen active" id="s-login">
+  <div class="logo">
+    <h1>⬛ ResistorPro</h1>
+    <p id="txt-tagline">Maîtrisez le code couleur des résistances</p>
+  </div>
+  <div id="role-select">
+    <div class="profile-grid" id="role-grid">
+      <div class="profile-card" onclick="selectRole('admin')">
+        <div class="role-icon">⚙️</div>
+        <div class="role-name" data-i="role-admin">Administrateur</div>
+        <div class="role-sub" data-i="role-admin-sub">Paramétrage global</div>
+      </div>
+      <div class="profile-card" onclick="selectRole('trainer')">
+        <div class="role-icon">🎓</div>
+        <div class="role-name" data-i="role-trainer">Formateur</div>
+        <div class="role-sub" data-i="role-trainer-sub">Suivi des stagiaires</div>
+      </div>
+      <div class="profile-card" onclick="selectRole('student')">
+        <div class="role-icon">🧑‍🔧</div>
+        <div class="role-name" data-i="role-student">Stagiaire</div>
+        <div class="role-sub" data-i="role-student-sub">Exercices pratiques</div>
+      </div>
+    </div>
+  </div>
+  <div class="user-list" id="user-list-section" style="display:none">
+    <h3 id="txt-select-user">Sélectionner un profil</h3>
+    <div id="user-list-items"></div>
+    <button class="btn-add" id="btn-new-user" onclick="createNewUser()">+ Nouveau profil</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN: TRAINER ===== -->
+<div class="screen" id="s-trainer">
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="back-btn" onclick="goHome()">← <span data-i="back">Retour</span></button>
+      <span class="topbar-logo">ResistorPro</span>
+    </div>
+    <span style="color:var(--text2);font-size:.9rem" id="trainer-welcome"></span>
+  </div>
+
+  <p class="section-title" data-i="stats-title">Statistiques globales</p>
+  <div class="dash-grid">
+    <div class="stat-card"><div class="stat-label" data-i="stat-students">Stagiaires</div><div class="stat-value" id="stat-total">0</div></div>
+    <div class="stat-card"><div class="stat-label" data-i="stat-sessions">Sessions</div><div class="stat-value" id="stat-sessions">0</div></div>
+    <div class="stat-card"><div class="stat-label" data-i="stat-avg">Score moyen</div><div class="stat-value" id="stat-avg">—</div></div>
+  </div>
+
+  <p class="section-title" data-i="settings-title">Paramètres de session</p>
+  <div class="settings-panel">
+    <div class="settings-row">
+      <div><div data-i="set-nb-q">Nombre de questions</div><div class="hint" data-i="set-nb-q-hint">Par session d'exercice</div></div>
+      <input type="number" class="number-input" id="set-nb-questions" min="5" max="50" value="10" style="width:70px" onchange="saveSettings()">
+    </div>
+    <div class="settings-row">
+      <div><div data-i="set-bands">Types de bandes autorisés</div></div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem"><input type="checkbox" id="set-4bands" checked onchange="saveSettings()"> 4</label>
+        <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem"><input type="checkbox" id="set-5bands" checked onchange="saveSettings()"> 5</label>
+        <label style="display:flex;align-items:center;gap:.3rem;font-size:.85rem"><input type="checkbox" id="set-6bands" checked onchange="saveSettings()"> 6</label>
+      </div>
+    </div>
+    <div class="settings-row">
+      <div><div data-i="set-random">Couleurs en ordre aléatoire</div><div class="hint" data-i="set-random-hint">Mélange la palette de réponse</div></div>
+      <label class="toggle"><input type="checkbox" id="set-random-colors" onchange="saveSettings()"><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><div data-i="set-both-modes">Activer les deux modes</div><div class="hint" data-i="set-both-modes-hint">Lecture + Composition</div></div>
+      <label class="toggle"><input type="checkbox" id="set-both-modes" checked onchange="saveSettings()"><span class="toggle-slider"></span></label>
+    </div>
+  </div>
+
+  <p class="section-title" data-i="students-title">Liste des stagiaires</p>
+  <table class="students-table">
+    <thead><tr>
+      <th data-i="th-name">Nom</th>
+      <th data-i="th-level">Niveau</th>
+      <th data-i="th-score">Dernier score</th>
+      <th data-i="th-sessions">Sessions</th>
+      <th data-i="th-progress">Progression</th>
+    </tr></thead>
+    <tbody id="students-tbody"></tbody>
+  </table>
+  <div style="height:2rem"></div>
+</div>
+
+<!-- ===== SCREEN: EXERCISE ===== -->
+<div class="screen" id="s-exercise">
+  <div class="ex-topbar">
+    <button class="back-btn" onclick="goHome()">← <span data-i="quit">Quitter</span></button>
+    <div class="ex-progress">
+      <div class="progress-track"><div class="progress-fill" id="ex-progress-fill" style="width:0%"></div></div>
+      <span class="progress-label" id="ex-progress-label">0/10</span>
+    </div>
+    <span class="score-display" id="ex-score">XP: 0</span>
+    <button class="help-btn" onclick="showHelp()" style="margin-left:.5rem">? <span data-i="help">Aide</span></button>
+  </div>
+
+  <div class="mode-tag" id="ex-mode-tag"></div>
+  <div class="tries-row" id="tries-row"></div>
+
+  <div class="resistor-wrap">
+    <svg class="resistor-svg" id="resistor-svg" viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <!-- READ MODE: pick value -->
+  <div id="read-mode-ui" style="display:none">
+    <div class="question-card">
+      <p class="question-text" id="read-question"></p>
+    </div>
+    <div class="read-answer">
+      <div class="read-field">
+        <label data-i="lbl-value">Valeur</label>
+        <input type="number" id="read-value-input" placeholder="ex: 4700" min="0">
+        <select class="tol-select" id="read-unit-select">
+          <option value="1">Ω</option>
+          <option value="1000">kΩ</option>
+          <option value="1000000">MΩ</option>
+        </select>
+      </div>
+      <div class="read-field">
+        <label data-i="lbl-tolerance">Tolérance</label>
+        <select class="tol-select" id="read-tol-select">
+          <option value="1">±1% (brun)</option>
+          <option value="2">±2% (rouge)</option>
+          <option value="0.5">±0.5% (vert)</option>
+          <option value="0.25">±0.25% (bleu)</option>
+          <option value="0.1">±0.1% (violet)</option>
+          <option value="0.05">±0.05% (gris)</option>
+          <option value="5">±5% (or)</option>
+          <option value="10">±10% (argent)</option>
+        </select>
+      </div>
+      <div class="read-field" id="coeff-field" style="display:none">
+        <label data-i="lbl-coeff">Coeff. temp.</label>
+        <select class="tol-select" id="read-coeff-select">
+          <option value="100">100ppm (brun)</option>
+          <option value="50">50ppm (rouge)</option>
+          <option value="15">15ppm (orange)</option>
+          <option value="25">25ppm (jaune)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPOSE MODE: pick colors -->
+  <div id="compose-mode-ui" style="display:none">
+    <div class="question-card">
+      <p class="question-text" id="compose-question"></p>
+      <div class="value-display" id="compose-value-display"></div>
+    </div>
+    <div class="band-selectors" id="band-selectors"></div>
+  </div>
+
+  <div class="feedback-box" id="feedback-box">
+    <strong id="feedback-title"></strong>
+    <p id="feedback-text"></p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-primary" id="btn-submit" onclick="submitAnswer()">✓ <span data-i="validate">Valider</span></button>
+    <button class="btn-secondary" id="btn-next" style="display:none" onclick="nextQuestion()"><span data-i="next">Question suivante</span> →</button>
+    <button class="btn-secondary" id="btn-audio" onclick="replayAudio()">🔊 <span data-i="replay">Réécouter</span></button>
+  </div>
+</div>
+
+<!-- ===== SCREEN: RESULTS ===== -->
+<div class="screen" id="s-results">
+  <div class="results-card">
+    <div class="results-header">
+      <div class="results-score" id="res-score">—</div>
+      <div class="results-label" data-i="res-label">Score final</div>
+    </div>
+    <div class="results-meta">
+      <div class="meta-item"><div class="mv" id="res-correct">—</div><div class="ml" data-i="res-correct">Bonnes réponses</div></div>
+      <div class="meta-item"><div class="mv" id="res-tries">—</div><div class="ml" data-i="res-tries-lbl">Essais utilisés</div></div>
+      <div class="meta-item"><div class="mv" id="res-time">—</div><div class="ml" data-i="res-time-lbl">Temps</div></div>
+      <div class="meta-item"><div class="mv" id="res-streak">—</div><div class="ml" data-i="res-streak-lbl">Série parfaite</div></div>
+    </div>
+    <div class="xp-gained">
+      <div class="xp-val" id="res-xp">+0 XP</div>
+      <div class="xp-label" data-i="xp-earned">Points gagnés</div>
+      <div class="level-bar-wrap">
+        <div class="level-info"><span id="res-level-label">Niveau 1</span><span id="res-level-next"></span></div>
+        <div class="level-bar-track"><div class="level-bar-fill" id="res-level-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <p class="section-title" data-i="breakdown-title">Détail des réponses</p>
+    <div class="results-breakdown" id="results-breakdown"></div>
+    <div class="btn-row" style="margin-top:1.5rem">
+      <button class="btn-primary" onclick="restartExercise()" data-i="btn-retry">Recommencer</button>
+      <button class="btn-secondary" onclick="printReport()" data-i="btn-print">🖨 Imprimer</button>
+      <button class="btn-secondary" onclick="goHome()" data-i="btn-home">Accueil</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HELP OVERLAY ===== -->
+<div class="overlay" id="help-overlay">
+  <div class="panel">
+    <button class="panel-close" onclick="hideHelp()">✕</button>
+    <h2 id="help-title">📊 Code couleur — <span id="help-bands-label"></span></h2>
+    <div id="help-content"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const COLORS = [
+  {name:'Noir',   en:'Black',  hex:'#1a1a1a', digit:0, mult:1,       tol:null,  coeff:null,  border:'#444'},
+  {name:'Brun',   en:'Brown',  hex:'#8B4513', digit:1, mult:10,      tol:1,     coeff:100,   border:'#a05020'},
+  {name:'Rouge',  en:'Red',    hex:'#CC0000', digit:2, mult:100,     tol:2,     coeff:50,    border:'#ee2222'},
+  {name:'Orange', en:'Orange', hex:'#FF8000', digit:3, mult:1000,    tol:null,  coeff:15,    border:'#ffa040'},
+  {name:'Jaune',  en:'Yellow', hex:'#FFD700', digit:4, mult:10000,   tol:null,  coeff:25,    border:'#ffe040'},
+  {name:'Vert',   en:'Green',  hex:'#228B22', digit:5, mult:100000,  tol:0.5,   coeff:null,  border:'#33aa33'},
+  {name:'Bleu',   en:'Blue',   hex:'#1E5FA8', digit:6, mult:1000000, tol:0.25,  coeff:null,  border:'#3377cc'},
+  {name:'Violet', en:'Violet', hex:'#8B008B', digit:7, mult:1e7,     tol:0.1,   coeff:null,  border:'#aa00aa'},
+  {name:'Gris',   en:'Gray',   hex:'#808080', digit:8, mult:1e8,     tol:0.05,  coeff:null,  border:'#aaaaaa'},
+  {name:'Blanc',  en:'White',  hex:'#F5F5F5', digit:9, mult:1e9,     tol:null,  coeff:null,  border:'#dddddd'},
+  {name:'Or',     en:'Gold',   hex:'#CFB53B', digit:null, mult:0.1,  tol:5,     coeff:null,  border:'#e8cc50'},
+  {name:'Argent', en:'Silver', hex:'#C0C0C0', digit:null, mult:0.01, tol:10,    coeff:null,  border:'#d8d8d8'},
+];
+
+const E24 = [1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+const DECADES = [1,10,100,1000,10000,100000,1000000,10000000];
+
+const TOL_COLORS_4 = [COLORS[10],COLORS[11],COLORS[1],COLORS[2],COLORS[5],COLORS[6],COLORS[7],COLORS[8]];
+const TOL_COLORS_5 = TOL_COLORS_4;
+const COEFF_COLORS = [COLORS[1],COLORS[2],COLORS[3],COLORS[4]];
+
+// i18n
+const T = {
+  fr:{
+    tagline:'Maîtrisez le code couleur des résistances',
+    'role-admin':'Administrateur','role-admin-sub':'Paramétrage global',
+    'role-trainer':'Formateur','role-trainer-sub':'Suivi des stagiaires',
+    'role-student':'Stagiaire','role-student-sub':'Exercices pratiques',
+    'back':'Retour','quit':'Quitter','help':'Aide','validate':'Valider',
+    'next':'Question suivante','replay':'Réécouter',
+    'select-user':'Sélectionner un profil',
+    'stats-title':'Statistiques globales','settings-title':'Paramètres de session',
+    'students-title':'Liste des stagiaires',
+    'stat-students':'Stagiaires','stat-sessions':'Sessions','stat-avg':'Score moyen',
+    'set-nb-q':'Nombre de questions','set-nb-q-hint':'Par session d\'exercice',
+    'set-bands':'Types de bandes autorisés','set-random':'Couleurs en ordre aléatoire',
+    'set-random-hint':'Mélange la palette de réponse',
+    'set-both-modes':'Activer les deux modes','set-both-modes-hint':'Lecture + Composition',
+    'th-name':'Nom','th-level':'Niveau','th-score':'Dernier score','th-sessions':'Sessions','th-progress':'Progression',
+    'lbl-value':'Valeur','lbl-tolerance':'Tolérance','lbl-coeff':'Coeff. temp.',
+    'read-q-4':'Lisez cette résistance à 4 bandes et entrez sa valeur.',
+    'read-q-5':'Lisez cette résistance à 5 bandes et entrez sa valeur.',
+    'read-q-6':'Lisez cette résistance à 6 bandes et entrez sa valeur.',
+    'compose-q':'Choisissez les couleurs des bandes pour obtenir cette valeur :',
+    'mode-read':'Mode lecture : couleurs → valeur',
+    'mode-compose':'Mode composition : valeur → couleurs',
+    'band':'Bande','tol-band':'Tolérance','coeff-band':'Coeff.',
+    'try':'Essai','of':'sur',
+    'fb-correct-title':'✓ Bonne réponse !','fb-correct':'Excellent ! Vous avez correctement identifié la résistance.',
+    'fb-wrong-title':'✗ Erreur','fb-correction':'Correction : ',
+    'fb-final-title':'🔍 Correction finale',
+    'res-label':'Score final','res-correct':'Bonnes réponses','res-tries-lbl':'Essais utilisés',
+    'res-time-lbl':'Temps','res-streak-lbl':'Série parfaite',
+    'xp-earned':'Points gagnés','breakdown-title':'Détail des réponses',
+    'btn-retry':'Recommencer','btn-print':'🖨 Imprimer','btn-home':'Accueil',
+    'help-color':'Couleur','help-digit':'Chiffre','help-mult':'Multiplicateur','help-tol':'Tolérance','help-coeff':'Coeff.temp.',
+    'level-names':['Débutant','Apprenti','Technicien','Expert','Maître'],
+    'trainer-welcome':'Tableau de bord formateur',
+    'new-user-prompt':'Entrez votre prénom :',
+    'band-label':['1ère','2ème','3ème','Mult.','4ème','Tol.','Coeff.'],
+  },
+  en:{
+    tagline:'Master resistor color codes',
+    'role-admin':'Administrator','role-admin-sub':'Global settings',
+    'role-trainer':'Trainer','role-trainer-sub':'Student tracking',
+    'role-student':'Trainee','role-student-sub':'Practice exercises',
+    'back':'Back','quit':'Quit','help':'Help','validate':'Validate',
+    'next':'Next question','replay':'Replay',
+    'select-user':'Select a profile',
+    'stats-title':'Global statistics','settings-title':'Session settings',
+    'students-title':'Student list',
+    'stat-students':'Students','stat-sessions':'Sessions','stat-avg':'Avg score',
+    'set-nb-q':'Number of questions','set-nb-q-hint':'Per exercise session',
+    'set-bands':'Allowed band types','set-random':'Random color order',
+    'set-random-hint':'Shuffle the answer palette',
+    'set-both-modes':'Enable both modes','set-both-modes-hint':'Read + Compose',
+    'th-name':'Name','th-level':'Level','th-score':'Last score','th-sessions':'Sessions','th-progress':'Progress',
+    'lbl-value':'Value','lbl-tolerance':'Tolerance','lbl-coeff':'Temp. coeff.',
+    'read-q-4':'Read this 4-band resistor and enter its value.',
+    'read-q-5':'Read this 5-band resistor and enter its value.',
+    'read-q-6':'Read this 6-band resistor and enter its value.',
+    'compose-q':'Choose the band colors to get this value:',
+    'mode-read':'Read mode: colors → value',
+    'mode-compose':'Compose mode: value → colors',
+    'band':'Band','tol-band':'Tolerance','coeff-band':'Coeff.',
+    'try':'Try','of':'of',
+    'fb-correct-title':'✓ Correct!','fb-correct':'Excellent! You correctly identified the resistor.',
+    'fb-wrong-title':'✗ Wrong','fb-correction':'Correction: ',
+    'fb-final-title':'🔍 Final correction',
+    'res-label':'Final score','res-correct':'Correct answers','res-tries-lbl':'Tries used',
+    'res-time-lbl':'Time','res-streak-lbl':'Perfect streak',
+    'xp-earned':'Points earned','breakdown-title':'Answer breakdown',
+    'btn-retry':'Retry','btn-print':'🖨 Print','btn-home':'Home',
+    'help-color':'Color','help-digit':'Digit','help-mult':'Multiplier','help-tol':'Tolerance','help-coeff':'Temp.coeff.',
+    'level-names':['Beginner','Apprentice','Technician','Expert','Master'],
+    'trainer-welcome':'Trainer dashboard',
+    'new-user-prompt':'Enter your first name:',
+    'band-label':['1st','2nd','3rd','Mult.','4th','Tol.','Coeff.'],
+  }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let lang = 'fr';
+let currentRole = null;
+let currentUser = null;
+let settings = {nbQ:10, bands:[4,5,6], randomColors:false, bothModes:true};
+let session = {questions:[],current:0,score:0,xp:0,results:[],startTime:0,streak:0};
+let currentQ = null;
+let triesLeft = 3;
+let lastAudioText = '';
+let users = JSON.parse(localStorage.getItem('rp_users')||'[]');
+if(!users.length) users = [
+  {id:1,name:'Marie D.',role:'student',xp:340,level:2,sessions:5,lastScore:80},
+  {id:2,name:'Thomas B.',role:'student',xp:120,level:1,sessions:2,lastScore:60},
+  {id:3,name:'Lucas F.',role:'student',xp:890,level:3,sessions:12,lastScore:95},
+];
+
+function saveUsers(){localStorage.setItem('rp_users',JSON.stringify(users));}
+function saveSettings(){
+  settings.nbQ = parseInt(document.getElementById('set-nb-questions').value)||10;
+  settings.randomColors = document.getElementById('set-random-colors').checked;
+  settings.bothModes = document.getElementById('set-both-modes').checked;
+  settings.bands=[];
+  if(document.getElementById('set-4bands').checked) settings.bands.push(4);
+  if(document.getElementById('set-5bands').checked) settings.bands.push(5);
+  if(document.getElementById('set-6bands').checked) settings.bands.push(6);
+  if(!settings.bands.length) settings.bands=[4];
+  localStorage.setItem('rp_settings',JSON.stringify(settings));
+}
+
+// ============================================================
+// i18n
+// ============================================================
+function t(key){return (T[lang]&&T[lang][key])||key;}
+function setLang(l){
+  lang=l;
+  document.getElementById('btn-fr').classList.toggle('active',l==='fr');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.getElementById('txt-tagline').textContent=t('tagline');
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const k=el.getAttribute('data-i');
+    if(T[lang][k]) el.textContent=T[lang][k];
+  });
+  if(currentRole==='trainer') renderTrainer();
+}
+
+// ============================================================
+// SCREENS
+// ============================================================
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goHome(){
+  currentRole=null; currentUser=null;
+  document.getElementById('user-list-section').style.display='none';
+  document.getElementById('role-select').style.display='block';
+  showScreen('s-login');
+}
+
+function selectRole(role){
+  currentRole=role;
+  document.getElementById('role-select').style.display='none';
+  const section=document.getElementById('user-list-section');
+  section.style.display='block';
+  renderUserList(role);
+}
+
+function renderUserList(role){
+  const items=document.getElementById('user-list-items');
+  const filtered = role==='trainer'
+    ? [{id:'tr1',name:'Prof. Martin',role:'trainer',xp:0,level:0,sessions:0},{id:'tr2',name:'Mme Dupont',role:'trainer',xp:0,level:0,sessions:0}]
+    : role==='admin'
+    ? [{id:'a1',name:'Admin',role:'admin',xp:0,level:0,sessions:0}]
+    : users.filter(u=>u.role==='student');
+  items.innerHTML='';
+  filtered.forEach(u=>{
+    const initials=u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const div=document.createElement('div');
+    div.className='user-item';
+    div.innerHTML=`<div class="user-avatar">${initials}</div><div class="user-info"><div class="name">${u.name}</div><div class="level">${role==='student'?t('level-names')[Math.min(u.level||0,4)]+' — '+u.xp+' XP':role}</div></div>`;
+    div.onclick=()=>loginAs(u);
+    items.appendChild(div);
+  });
+  document.getElementById('btn-new-user').style.display=role==='student'?'block':'none';
+}
+
+function loginAs(user){
+  currentUser=user;
+  if(user.role==='trainer'||currentRole==='trainer'){showTrainer();}
+  else if(currentRole==='admin'){showTrainer();}
+  else{startExercise();}
+}
+
+function createNewUser(){
+  const name=prompt(t('new-user-prompt'));
+  if(!name||!name.trim()) return;
+  const u={id:Date.now(),name:name.trim(),role:'student',xp:0,level:0,sessions:0,lastScore:null};
+  users.push(u);saveUsers();
+  renderUserList('student');
+}
+
+// ============================================================
+// TRAINER DASHBOARD
+// ============================================================
+function showTrainer(){
+  showScreen('s-trainer');
+  document.getElementById('trainer-welcome').textContent=t('trainer-welcome');
+  renderTrainer();
+}
+function renderTrainer(){
+  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
+  if(saved.nbQ) settings=Object.assign(settings,saved);
+  document.getElementById('set-nb-questions').value=settings.nbQ;
+  document.getElementById('set-random-colors').checked=!!settings.randomColors;
+  document.getElementById('set-both-modes').checked=settings.bothModes!==false;
+  document.getElementById('set-4bands').checked=!settings.bands||settings.bands.includes(4);
+  document.getElementById('set-5bands').checked=!settings.bands||settings.bands.includes(5);
+  document.getElementById('set-6bands').checked=!settings.bands||settings.bands.includes(6);
+  const studs=users.filter(u=>u.role==='student');
+  document.getElementById('stat-total').textContent=studs.length;
+  const totalSessions=studs.reduce((a,u)=>a+(u.sessions||0),0);
+  document.getElementById('stat-sessions').textContent=totalSessions;
+  const withScore=studs.filter(u=>u.lastScore!=null);
+  document.getElementById('stat-avg').textContent=withScore.length?Math.round(withScore.reduce((a,u)=>a+u.lastScore,0)/withScore.length)+'%':'—';
+  const tbody=document.getElementById('students-tbody');
+  tbody.innerHTML='';
+  studs.forEach(u=>{
+    const lvlName=t('level-names')[Math.min(u.level||0,4)];
+    const score=u.lastScore!=null?`<span class="badge ${u.lastScore>=80?'badge-green':u.lastScore>=50?'badge-gold':'badge-red'}">${u.lastScore}%</span>`:'<span class="badge badge-gray">—</span>';
+    const pct=Math.min(100,Math.round((u.xp%500)/5));
+    tbody.innerHTML+=`<tr><td>${u.name}</td><td><span class="badge badge-gold">${lvlName}</span></td><td>${score}</td><td>${u.sessions||0}</td><td><div style="background:var(--bg3);border-radius:3px;height:6px;width:80px"><div style="background:var(--accent);height:100%;border-radius:3px;width:${pct}%"></div></div></td></tr>`;
+  });
+}
+
+// ============================================================
+// EXERCISE ENGINE
+// ============================================================
+function getE24Value(){
+  const base=E24[Math.floor(Math.random()*E24.length)];
+  const dec=DECADES[Math.floor(Math.random()*(DECADES.length-1))];
+  return Math.round(base*dec);
+}
+
+function valueToColor(val, nbBands){
+  // Returns array of color indices
+  const digits=[];
+  if(nbBands===4){
+    // 2 sig figs + mult + tol
+    let v=val; let mult=0;
+    while(v>=100){v/=10;mult++;}
+    while(v<10&&v>0){v*=10;mult--;}
+    const d1=Math.floor(v/10);
+    const d2=Math.floor(v%10);
+    const tolColors=TOL_COLORS_4;
+    const tolIdx=Math.floor(Math.random()*tolColors.length);
+    return {
+      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),COLORS.findIndex(c=>c.mult===Math.pow(10,mult)),COLORS.indexOf(tolColors[tolIdx])],
+      value:val, tol:tolColors[tolIdx].tol, coeff:null, nbBands:4
+    };
+  }
+  if(nbBands===5){
+    let v=val; let mult=0;
+    while(v>=1000){v/=10;mult++;}
+    while(v<100&&v>0){v*=10;mult--;}
+    const d1=Math.floor(v/100);
+    const d2=Math.floor((v%100)/10);
+    const d3=Math.floor(v%10);
+    const tolColors=TOL_COLORS_5;
+    const tolIdx=Math.floor(Math.random()*tolColors.length);
+    return {
+      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),COLORS.findIndex(c=>c.digit===d3),COLORS.findIndex(c=>c.mult===Math.pow(10,mult)),COLORS.indexOf(tolColors[tolIdx])],
+      value:val, tol:tolColors[tolIdx].tol, coeff:null, nbBands:5
+    };
+  }
+  if(nbBands===6){
+    let v=val; let mult=0;
+    while(v>=1000){v/=10;mult++;}
+    while(v<100&&v>0){v*=10;mult--;}
+    const d1=Math.floor(v/100);
+    const d2=Math.floor((v%100)/10);
+    const d3=Math.floor(v%10);
+    const tolColors=TOL_COLORS_5;
+    const tolIdx=Math.floor(Math.random()*tolColors.length);
+    const coeffIdx=Math.floor(Math.random()*COEFF_COLORS.length);
+    return {
+      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),COLORS.findIndex(c=>c.digit===d3),COLORS.findIndex(c=>c.mult===Math.pow(10,mult)),COLORS.indexOf(tolColors[tolIdx]),COLORS.indexOf(COEFF_COLORS[coeffIdx])],
+      value:val, tol:tolColors[tolIdx].tol, coeff:COEFF_COLORS[coeffIdx].coeff, nbBands:6
+    };
+  }
+}
+
+function colorToValue(bands, nbBands){
+  if(nbBands===4){
+    const d1=COLORS[bands[0]].digit;
+    const d2=COLORS[bands[1]].digit;
+    const mult=COLORS[bands[2]].mult;
+    const tol=COLORS[bands[3]].tol;
+    return {value:(d1*10+d2)*mult, tol};
+  }
+  if(nbBands>=5){
+    const d1=COLORS[bands[0]].digit;
+    const d2=COLORS[bands[1]].digit;
+    const d3=COLORS[bands[2]].digit;
+    const mult=COLORS[bands[3]].mult;
+    const tol=COLORS[bands[4]].tol;
+    const coeff=nbBands===6?COLORS[bands[5]].coeff:null;
+    return {value:(d1*100+d2*10+d3)*mult, tol, coeff};
+  }
+}
+
+function generateQuestion(){
+  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
+  if(saved.bands) settings.bands=saved.bands;
+  if(saved.randomColors!==undefined) settings.randomColors=saved.randomColors;
+  if(saved.bothModes!==undefined) settings.bothModes=saved.bothModes;
+  const bands=settings.bands&&settings.bands.length?settings.bands:[4,5,6];
+  const nbBands=bands[Math.floor(Math.random()*bands.length)];
+  const value=getE24Value();
+  const resistor=valueToColor(value,nbBands);
+  const mode=settings.bothModes?(Math.random()<0.5?'read':'compose'):'read';
+  return {resistor, mode, nbBands};
+}
+
+function formatValue(v){
+  if(v>=1000000) return (v/1000000)+'MΩ';
+  if(v>=1000) return (v/1000)+'kΩ';
+  return v+'Ω';
+}
+
+function startExercise(){
+  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
+  if(saved.nbQ) settings.nbQ=saved.nbQ;
+  if(saved.bands) settings.bands=saved.bands;
+  if(saved.randomColors!==undefined) settings.randomColors=saved.randomColors;
+  if(saved.bothModes!==undefined) settings.bothModes=saved.bothModes;
+  session={questions:[],current:0,score:0,xp:currentUser?currentUser.xp:0,results:[],startTime:Date.now(),streak:0};
+  for(let i=0;i<settings.nbQ;i++) session.questions.push(generateQuestion());
+  showScreen('s-exercise');
+  loadQuestion(0);
+}
+
+function loadQuestion(idx){
+  currentQ=session.questions[idx];
+  triesLeft=3;
+  document.getElementById('feedback-box').classList.remove('visible','fb-error','fb-success','fb-warn');
+  document.getElementById('btn-next').style.display='none';
+  document.getElementById('btn-submit').style.display='inline-block';
+  document.getElementById('btn-submit').disabled=false;
+
+  // Progress
+  const pct=Math.round((idx/session.questions.length)*100);
+  document.getElementById('ex-progress-fill').style.width=pct+'%';
+  document.getElementById('ex-progress-label').textContent=(idx+1)+'/'+session.questions.length;
+  document.getElementById('ex-score').textContent='XP: '+(currentUser?currentUser.xp:0);
+
+  // Mode tag
+  document.getElementById('ex-mode-tag').textContent=t('mode-'+currentQ.mode);
+
+  // Tries
+  renderTries();
+
+  // Draw resistor
+  drawResistor(currentQ.resistor.bands, currentQ.resistor.nbBands);
+
+  // Show right UI
+  document.getElementById('read-mode-ui').style.display='none';
+  document.getElementById('compose-mode-ui').style.display='none';
+  if(currentQ.mode==='read'){
+    document.getElementById('read-mode-ui').style.display='block';
+    document.getElementById('read-question').textContent=t('read-q-'+currentQ.resistor.nbBands);
+    document.getElementById('read-value-input').value='';
+    document.getElementById('read-value-input').className='';
+    document.getElementById('read-unit-select').value='1';
+    // Pre-select likely tol
+    document.getElementById('read-tol-select').value=currentQ.resistor.tol;
+    document.getElementById('coeff-field').style.display=currentQ.resistor.nbBands===6?'flex':'none';
+    if(currentQ.resistor.nbBands===6) document.getElementById('read-coeff-select').value=currentQ.resistor.coeff;
+  } else {
+    document.getElementById('compose-mode-ui').style.display='block';
+    document.getElementById('compose-question').textContent=t('compose-q');
+    document.getElementById('compose-value-display').textContent=formatValue(currentQ.resistor.value)+' ±'+currentQ.resistor.tol+'%'+(currentQ.resistor.coeff?' — '+currentQ.resistor.coeff+'ppm':'');
+    renderBandSelectors();
+  }
+}
+
+function renderTries(){
+  const row=document.getElementById('tries-row');
+  row.innerHTML='';
+  for(let i=0;i<3;i++){
+    const d=document.createElement('div');
+    d.className='try-dot'+(i<(3-triesLeft)?' used':i===(3-triesLeft)?' active':'');
+    row.appendChild(d);
+  }
+}
+
+// ============================================================
+// RESISTOR DRAWING
+// ============================================================
+function drawResistor(bands, nbBands){
+  const svg=document.getElementById('resistor-svg');
+  const W=500,H=120;
+  const bodyX=100,bodyW=300,bodyH=60,bodyY=(H-bodyH)/2;
+  const bandW=nbBands===4?28:nbBands===5?22:18;
+  const gap=nbBands===4?42:nbBands===5?30:24;
+  const startX=bodyX+20;
+
+  let html=`
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8a060"/>
+      <stop offset="50%" stop-color="#d4b070"/>
+      <stop offset="100%" stop-color="#b08040"/>
+    </linearGradient>
+  </defs>
+  <!-- leads -->
+  <line x1="0" y1="${H/2}" x2="${bodyX}" y2="${H/2}" stroke="#aaa" stroke-width="4"/>
+  <line x1="${bodyX+bodyW}" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="#aaa" stroke-width="4"/>
+  <!-- body -->
+  <rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="18" fill="url(#bg)" stroke="#a08040" stroke-width="1.5"/>
+  `;
+
+  // Band positions
+  for(let i=0;i<nbBands;i++){
+    const ci=bands[i];
+    if(ci==null||ci<0||ci>=COLORS.length) continue;
+    const c=COLORS[ci];
+    const x=startX+i*gap;
+    const isLast=(i===nbBands-1);
+    const bx=isLast?(bodyX+bodyW-20-bandW):x;
+    html+=`<rect x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="${c.hex}" stroke="${c.border}" stroke-width="1" opacity="0.95"/>`;
+  }
+  svg.innerHTML=html;
+}
+
+// ============================================================
+// BAND SELECTORS (compose mode)
+// ============================================================
+function renderBandSelectors(){
+  const container=document.getElementById('band-selectors');
+  container.innerHTML='';
+  const nb=currentQ.resistor.nbBands;
+  const labels=t('band-label');
+  // bands: digit bands + mult + tol + (coeff)
+  const bandDefs=[];
+  if(nb===4){
+    bandDefs.push({label:labels[0]+' '+t('band'), type:'digit'});
+    bandDefs.push({label:labels[1]+' '+t('band'), type:'digit'});
+    bandDefs.push({label:labels[3], type:'mult'});
+    bandDefs.push({label:t('tol-band'), type:'tol'});
+  } else if(nb===5){
+    bandDefs.push({label:labels[0]+' '+t('band'), type:'digit'});
+    bandDefs.push({label:labels[1]+' '+t('band'), type:'digit'});
+    bandDefs.push({label:labels[2]+' '+t('band'), type:'digit'});
+    bandDefs.push({label:labels[3], type:'mult'});
+    bandDefs.push({label:t('tol-band'), type:'tol'});
+  } else {
+    bandDefs.push({label:labels[0]+' '+t('band'), type:'digit'});
+    bandDefs.push({label:labels[1]+' '+t('band'), type:'digit'});
+    bandDefs.push({label:labels[2]+' '+t('band'), type:'digit'});
+    bandDefs.push({label:labels[3], type:'mult'});
+    bandDefs.push({label:t('tol-band'), type:'tol'});
+    bandDefs.push({label:t('coeff-band'), type:'coeff'});
+  }
+
+  bandDefs.forEach((bd,i)=>{
+    const row=document.createElement('div');
+    row.className='band-row'; row.id='band-row-'+i;
+    const lbl=document.createElement('div'); lbl.className='band-label'; lbl.textContent=bd.label;
+    row.appendChild(lbl);
+    const palette=document.createElement('div'); palette.className='color-palette';
+
+    let availColors=[];
+    if(bd.type==='digit') availColors=COLORS.filter(c=>c.digit!==null);
+    else if(bd.type==='mult') availColors=COLORS.filter(c=>c.mult!==undefined&&c.digit===null||c.digit!==null);
+    else if(bd.type==='tol') availColors=TOL_COLORS_4;
+    else if(bd.type==='coeff') availColors=COEFF_COLORS;
+
+    // Remove or & silver from digit
+    if(bd.type==='digit') availColors=availColors.filter(c=>c.tol===null||c.name==='Brun'||c.name==='Rouge'||c.digit!==null);
+
+    let orderedColors=[...availColors];
+    if(settings.randomColors) orderedColors=orderedColors.sort(()=>Math.random()-.5);
+
+    orderedColors.forEach(c=>{
+      const ci=COLORS.indexOf(c);
+      const btn=document.createElement('button');
+      btn.className='color-btn'; btn.setAttribute('data-ci',ci); btn.setAttribute('data-band',i);
+      btn.setAttribute('title',lang==='fr'?c.name:c.en);
+      btn.innerHTML=`<div class="color-swatch" style="background:${c.hex};border:1px solid ${c.border}"></div>`;
+      btn.onclick=()=>selectBandColor(i,ci);
+      palette.appendChild(btn);
+    });
+    row.appendChild(palette);
+    container.appendChild(row);
+  });
+}
+
+function selectBandColor(bandIdx, colorIdx){
+  // Deselect others in same band
+  document.querySelectorAll(`.color-btn[data-band="${bandIdx}"]`).forEach(b=>b.classList.remove('selected'));
+  const btn=document.querySelector(`.color-btn[data-band="${bandIdx}"][data-ci="${colorIdx}"]`);
+  if(btn) btn.classList.add('selected');
+}
+
+function getSelectedBands(){
+  const nb=currentQ.resistor.nbBands;
+  const result=[];
+  for(let i=0;i<nb;i++){
+    const sel=document.querySelector(`.color-btn[data-band="${i}"].selected`);
+    result.push(sel?parseInt(sel.getAttribute('data-ci')):null);
+  }
+  return result;
+}
+
+// ============================================================
+// ANSWER VALIDATION
+// ============================================================
+function submitAnswer(){
+  if(triesLeft===0) return;
+  let correct=false; let feedbackMsg=''; let errors=[];
+
+  if(currentQ.mode==='read'){
+    const rawVal=parseFloat(document.getElementById('read-value-input').value)||0;
+    const unit=parseFloat(document.getElementById('read-unit-select').value)||1;
+    const enteredVal=rawVal*unit;
+    const enteredTol=parseFloat(document.getElementById('read-tol-select').value);
+    const correctVal=currentQ.resistor.value;
+    const correctTol=currentQ.resistor.tol;
+
+    const valOk=Math.abs(enteredVal-correctVal)<0.01*correctVal+0.5;
+    const tolOk=Math.abs(enteredTol-correctTol)<0.01;
+    correct=valOk&&tolOk;
+
+    if(!correct){
+      if(!valOk){
+        errors.push({field:'value',msg:(lang==='fr'?'Valeur incorrecte. La valeur correcte est ':'Incorrect value. Correct value is ')+formatValue(correctVal)});
+        document.getElementById('read-value-input').className='error-input';
+      } else {
+        document.getElementById('read-value-input').className='correct-input';
+      }
+      if(!tolOk) errors.push({field:'tol',msg:(lang==='fr'?'Tolérance incorrecte. La tolérance correcte est ':'Incorrect tolerance. Correct tolerance is ')+'±'+correctTol+'%'});
+    }
+  } else {
+    const selected=getSelectedBands();
+    const nb=currentQ.resistor.nbBands;
+    if(selected.includes(null)){
+      showFeedback('warn',lang==='fr'?'Sélection incomplète':'Incomplete selection',lang==='fr'?'Veuillez choisir une couleur pour chaque bande.':'Please select a color for each band.');
+      speak(lang==='fr'?'Sélection incomplète, veuillez choisir une couleur pour chaque bande':'Incomplete selection, please select a color for each band');
+      return;
+    }
+    correct=selected.every((ci,i)=>ci===currentQ.resistor.bands[i]);
+    if(!correct){
+      selected.forEach((ci,i)=>{
+        const row=document.getElementById('band-row-'+i);
+        if(row){
+          const ok=ci===currentQ.resistor.bands[i];
+          row.classList.toggle('error-band',!ok);
+          row.classList.toggle('correct-band',ok);
+          if(!ok){
+            const correctColor=COLORS[currentQ.resistor.bands[i]];
+            errors.push({band:i,msg:(lang==='fr'?'Bande ':'Band ')+(i+1)+(lang==='fr'?': couleur correcte est ':' correct color is ')+(lang==='fr'?correctColor.name:correctColor.en)});
+          }
+        }
+      });
+    }
+  }
+
+  triesLeft--;
+  renderTries();
+
+  if(correct){
+    const xpGain=triesLeft===2?30:triesLeft===1?20:10;
+    if(currentUser) currentUser.xp=(currentUser.xp||0)+xpGain;
+    session.results.push({idx:session.current,correct:true,triesUsed:3-triesLeft,value:currentQ.resistor.value});
+    session.streak++;
+    const msg=t('fb-correct');
+    showFeedback('success',t('fb-correct-title'),msg);
+    speak(lang==='fr'?'Bonne réponse ! '+msg:'Correct! '+msg);
+    document.getElementById('btn-submit').style.display='none';
+    document.getElementById('btn-next').style.display='inline-block';
+    if(currentQ.mode==='read') document.getElementById('read-value-input').className='correct-input';
+    else document.querySelectorAll('.band-row').forEach(r=>{r.classList.remove('error-band');r.classList.add('correct-band');});
+  } else if(triesLeft===0){
+    session.results.push({idx:session.current,correct:false,triesUsed:3,value:currentQ.resistor.value});
+    session.streak=0;
+    // Show correction
+    const corrStr=currentQ.mode==='read'
+      ? (lang==='fr'?'La valeur est ':'Value is ')+formatValue(currentQ.resistor.value)+' ±'+currentQ.resistor.tol+'%'
+      : (lang==='fr'?'Les couleurs correctes sont : ':'Correct colors are: ')+currentQ.resistor.bands.map(ci=>lang==='fr'?COLORS[ci].name:COLORS[ci].en).join(', ');
+    const msg=t('fb-correction')+corrStr;
+    showFeedback('error',t('fb-final-title'),msg);
+    speak(lang==='fr'?'Correction. '+msg:'Correction. '+msg);
+    document.getElementById('btn-submit').style.display='none';
+    document.getElementById('btn-next').style.display='inline-block';
+  } else {
+    const errMsg=errors.map(e=>e.msg).join('. ');
+    const tryInfo=(lang==='fr'?'Il vous reste '+triesLeft+' essai(s).':'You have '+triesLeft+' attempt(s) left.');
+    showFeedback('error',t('fb-wrong-title'),errMsg+'. '+tryInfo);
+    speak(errMsg+'. '+tryInfo);
+  }
+}
+
+function showFeedback(type,title,text){
+  const box=document.getElementById('feedback-box');
+  box.className='feedback-box visible fb-'+type;
+  document.getElementById('feedback-title').textContent=title;
+  document.getElementById('feedback-text').textContent=text;
+  lastAudioText=text;
+}
+
+function replayAudio(){speak(lastAudioText);}
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang==='fr'?'fr-FR':'en-US';
+  u.rate=0.95; u.pitch=1;
+  window.speechSynthesis.speak(u);
+}
+
+function nextQuestion(){
+  session.current++;
+  if(session.current>=session.questions.length){
+    showResults(); return;
+  }
+  loadQuestion(session.current);
+}
+
+function restartExercise(){startExercise();}
+
+// ============================================================
+// RESULTS
+// ============================================================
+function showResults(){
+  const elapsed=Math.round((Date.now()-session.startTime)/1000);
+  const mm=Math.floor(elapsed/60),ss=elapsed%60;
+  const correct=session.results.filter(r=>r.correct).length;
+  const total=session.results.length;
+  const pct=Math.round((correct/total)*100);
+  const totalTries=session.results.reduce((a,r)=>a+(r.triesUsed||0),0);
+  const streak=session.results.reduce((a,r)=>{return r.correct?a+1:0;},0);
+  const xpGain=correct*20+(streak>=5?50:streak>=3?20:0);
+
+  if(currentUser){
+    currentUser.xp=(currentUser.xp||0)+xpGain;
+    currentUser.level=Math.floor(currentUser.xp/300);
+    currentUser.sessions=(currentUser.sessions||0)+1;
+    currentUser.lastScore=pct;
+    saveUsers();
+  }
+
+  document.getElementById('res-score').textContent=pct+'%';
+  document.getElementById('res-correct').textContent=correct+'/'+total;
+  document.getElementById('res-tries').textContent=totalTries;
+  document.getElementById('res-time').textContent=mm+'m'+String(ss).padStart(2,'0')+'s';
+  document.getElementById('res-streak').textContent=streak;
+  document.getElementById('res-xp').textContent='+'+xpGain+' XP';
+
+  const lvl=currentUser?Math.min(Math.floor(currentUser.xp/300),4):0;
+  const xpTotal=currentUser?currentUser.xp:xpGain;
+  const lvlPct=Math.min(100,Math.round((xpTotal%300)/3));
+  document.getElementById('res-level-label').textContent=t('level-names')[lvl];
+  document.getElementById('res-level-next').textContent=(300-(xpTotal%300))+' XP → '+(t('level-names')[Math.min(lvl+1,4)]);
+  setTimeout(()=>{document.getElementById('res-level-bar').style.width=lvlPct+'%';},100);
+
+  // Breakdown
+  const bd=document.getElementById('results-breakdown');
+  bd.innerHTML='';
+  session.results.forEach((r,i)=>{
+    const dotsHtml=[0,1,2].map(j=>`<div class="mini-dot ${j<r.triesUsed?(j===r.triesUsed-1&&r.correct?'ok':'used'):''}"></div>`).join('');
+    bd.innerHTML+=`<div class="breakdown-row"><span class="breakdown-q">Q${i+1}</span><span class="breakdown-val">${formatValue(r.value)}</span><div class="breakdown-tries">${dotsHtml}</div><span class="${r.correct?'badge badge-green':'badge badge-red'}">${r.correct?(lang==='fr'?'✓':'✓'):(lang==='fr'?'✗':'✗')}</span></div>`;
+  });
+
+  showScreen('s-results');
+  speak(lang==='fr'?`Session terminée. Vous avez obtenu ${pct} pour cent. ${correct} bonnes réponses sur ${total}.`:`Session complete. You scored ${pct} percent. ${correct} correct out of ${total}.`);
+}
+
+function printReport(){
+  window.print();
+}
+
+// ============================================================
+// HELP OVERLAY
+// ============================================================
+function showHelp(){
+  const nb=currentQ?currentQ.resistor.nbBands:4;
+  document.getElementById('help-bands-label').textContent=nb+' '+(lang==='fr'?'bandes':'bands');
+  const helpContent=document.getElementById('help-content');
+  let html=`<table class="color-table"><thead><tr>
+    <th>${t('help-color')}</th>
+    <th>${t('help-digit')}</th>
+    <th>${t('help-mult')}</th>
+    <th>${t('help-tol')}</th>
+    ${nb===6?`<th>${t('help-coeff')}</th>`:''}
+  </tr></thead><tbody>`;
+  COLORS.forEach(c=>{
+    html+=`<tr>
+      <td><span class="color-swatch-sm" style="background:${c.hex};border-color:${c.border}"></span> ${lang==='fr'?c.name:c.en}</td>
+      <td>${c.digit!==null?c.digit:'—'}</td>
+      <td>${c.mult!=null?('×'+c.mult):'—'}</td>
+      <td>${c.tol!=null?('±'+c.tol+'%'):'—'}</td>
+      ${nb===6?`<td>${c.coeff!=null?(c.coeff+'ppm'):'—'}</td>`:''}
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  helpContent.innerHTML=html;
+  document.getElementById('help-overlay').classList.add('visible');
+}
+function hideHelp(){document.getElementById('help-overlay').classList.remove('visible');}
+
+// ============================================================
+// INIT
+// ============================================================
+(function init(){
+  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
+  if(saved.nbQ) settings=Object.assign(settings,saved);
+})();
+</script>
+</body>
+</html>
