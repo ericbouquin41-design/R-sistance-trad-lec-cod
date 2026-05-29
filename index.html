@@ -291,6 +291,82 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 /* EXAM MODE BANNER */
 .exam-banner{background:#f05a5a22;border:1px solid var(--error);border-radius:8px;padding:.5rem 1rem;width:100%;max-width:800px;text-align:center;font-family:var(--font-mono);font-size:.8rem;color:var(--error);margin-bottom:1rem}
 
+/* ===== REFLEXE MODE ===== */
+#s-reflexe{padding:1rem;gap:.8rem}
+.reflex-topbar{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:520px}
+.reflex-meta{display:flex;gap:1rem;align-items:center;font-family:var(--font-mono);font-size:.85rem}
+.reflex-streak{color:var(--accent);font-weight:700}
+.reflex-score-lbl{color:var(--text2)}
+
+/* Arc timer */
+.reflex-timer-wrap{position:relative;width:100px;height:100px;flex-shrink:0}
+.reflex-timer-svg{width:100%;height:100%}
+.reflex-timer-bg{fill:none;stroke:var(--bg3);stroke-width:8}
+.reflex-timer-arc{fill:none;stroke:var(--accent);stroke-width:8;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50px 50px;transition:stroke-dashoffset .1s linear, stroke .2s}
+.reflex-timer-text{font-family:var(--font-mono);font-size:1.3rem;fill:var(--text);text-anchor:middle;dominant-baseline:central}
+
+/* Color display */
+.reflex-color-stage{display:flex;flex-direction:column;align-items:center;gap:.8rem;width:100%;max-width:520px}
+.reflex-swatch-wrap{position:relative}
+.reflex-swatch{width:120px;height:120px;border-radius:20px;border:3px solid rgba(255,255,255,.12);box-shadow:0 8px 40px rgba(0,0,0,.5);transition:transform .15s}
+.reflex-color-name{font-family:var(--font-mono);font-size:1.1rem;color:var(--text2);letter-spacing:.05em}
+
+/* Direction badge */
+.reflex-direction{font-family:var(--font-mono);font-size:.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.25rem .7rem;color:var(--text2);text-align:center}
+
+/* Answer question */
+.reflex-question{font-size:1rem;color:var(--text2);text-align:center}
+.reflex-target{font-family:var(--font-mono);font-size:2rem;color:var(--accent);font-weight:700;text-align:center;min-height:2.4rem}
+
+/* Digit grid */
+.reflex-digit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;width:100%;max-width:460px}
+.reflex-digit-btn{padding:.7rem .3rem;background:var(--bg2);border:2px solid var(--border);border-radius:10px;font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:var(--text);cursor:pointer;transition:all .12s;text-align:center;position:relative;overflow:hidden}
+.reflex-digit-btn:hover{border-color:var(--accent);color:var(--accent);transform:scale(1.05)}
+.reflex-digit-btn:active{transform:scale(.94)}
+.reflex-digit-btn.flash-correct{background:var(--success)!important;border-color:var(--success)!important;color:#000!important;animation:reflex-pop .3s ease}
+.reflex-digit-btn.flash-wrong{background:var(--error)!important;border-color:var(--error)!important;color:#fff!important;animation:reflex-shake .3s ease}
+
+/* Color grid (inverse mode) */
+.reflex-color-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;width:100%;max-width:460px}
+.reflex-color-choice{width:100%;aspect-ratio:1;border-radius:10px;border:2px solid transparent;cursor:pointer;transition:all .12s;position:relative}
+.reflex-color-choice:hover{transform:scale(1.08);border-color:rgba(255,255,255,.5)}
+.reflex-color-choice:active{transform:scale(.93)}
+.reflex-color-choice.flash-correct{box-shadow:0 0 0 4px var(--success)!important;animation:reflex-pop .3s ease}
+.reflex-color-choice.flash-wrong{box-shadow:0 0 0 4px var(--error)!important;animation:reflex-shake .3s ease}
+.reflex-color-choice-label{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-family:var(--font-mono);font-size:.55rem;color:rgba(255,255,255,.7);text-shadow:0 1px 3px #000}
+
+/* Feedback flash */
+.reflex-feedback{font-family:var(--font-mono);font-size:.9rem;min-height:1.3rem;text-align:center;transition:opacity .2s}
+.reflex-feedback.ok{color:var(--success)}
+.reflex-feedback.ko{color:var(--error)}
+
+/* Progress */
+.reflex-progress-wrap{width:100%;max-width:520px}
+.reflex-progress-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.reflex-progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+.reflex-progress-lbl{font-family:var(--font-mono);font-size:.75rem;color:var(--text2);margin-top:.3rem;text-align:right}
+
+/* Results */
+.reflex-results{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:520px}
+.reflex-results-score{font-family:var(--font-mono);font-size:3rem;color:var(--accent);text-align:center;line-height:1}
+.reflex-results-sub{color:var(--text2);text-align:center;font-size:.9rem;margin-top:.3rem;margin-bottom:1.2rem}
+.reflex-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1.2rem}
+.reflex-stat-item{background:var(--bg3);border-radius:8px;padding:.7rem;text-align:center}
+.reflex-stat-val{font-family:var(--font-mono);font-size:1.2rem;color:var(--text);font-weight:700}
+.reflex-stat-lbl{font-size:.72rem;color:var(--text2);margin-top:.15rem}
+.reflex-mistakes{margin-top:.8rem}
+.reflex-mistake-title{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);margin-bottom:.5rem}
+.reflex-mistake-row{display:flex;align-items:center;gap:.6rem;padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.83rem}
+.reflex-mistake-row:last-child{border-bottom:none}
+.reflex-mistake-swatch{width:18px;height:18px;border-radius:4px;flex-shrink:0}
+.reflex-mistake-correct{margin-left:auto;font-family:var(--font-mono);color:var(--success)}
+.reflex-mistake-given{font-family:var(--font-mono);color:var(--error)}
+
+@keyframes reflex-pop{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes reflex-shake{0%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}100%{transform:translateX(0)}}
+@keyframes reflex-enter{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.reflex-enter{animation:reflex-enter .18s ease}
+
 /* PRINT */
 @media print{
   body{background:#fff;color:#000}
@@ -441,6 +517,29 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
         <button class="mode-opt" data-mode="compose" onclick="selectMode('compose')" data-i-mode="compose">🎨 Composition</button>
         <button class="mode-opt active" data-mode="both" onclick="selectMode('both')" data-i-mode="both">🔄 Lecture + Composition</button>
         <button class="mode-opt" data-mode="flashcard" onclick="selectMode('flashcard')" data-i-mode="flashcard">⚡ Flash Cards</button>
+        <button class="mode-opt" data-mode="reflexe" onclick="selectMode('reflexe')" data-i-mode="reflexe">🎯 Réflexe</button>
+      </div>
+    </div>
+    <!-- Reflexe sub-settings (shown only when reflexe mode selected) -->
+    <div id="reflexe-settings-panel" style="display:none;border-top:1px solid var(--border);padding-top:.8rem;margin-top:.2rem">
+      <div class="settings-row">
+        <div><div data-i="set-reflex-timer">Temps par question (Réflexe)</div><div class="hint" data-i="set-reflex-timer-hint">Recommandé : 2–4 s</div></div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <input type="number" class="number-input" id="set-reflex-timer" min="1" max="15" value="3" style="width:60px" onchange="saveSettings()">
+          <span style="color:var(--text2);font-size:.85rem">s</span>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div><div data-i="set-reflex-dir">Direction</div><div class="hint" data-i="set-reflex-dir-hint">Couleur→Chiffre ou Chiffre→Couleur</div></div>
+        <div style="display:flex;gap:.4rem">
+          <button class="mode-opt active" id="reflex-dir-fwd" data-reflex-dir="fwd" onclick="selectReflexDir('fwd')" data-i="reflex-dir-fwd">🎨→🔢</button>
+          <button class="mode-opt" id="reflex-dir-inv" data-reflex-dir="inv" onclick="selectReflexDir('inv')" data-i="reflex-dir-inv">🔢→🎨</button>
+          <button class="mode-opt" id="reflex-dir-mix" data-reflex-dir="mix" onclick="selectReflexDir('mix')" data-i="reflex-dir-mix">🔀 Mix</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div><div data-i="set-reflex-nb">Nombre de questions (Réflexe)</div></div>
+        <input type="number" class="number-input" id="set-reflex-nb" min="5" max="50" value="20" style="width:70px" onchange="saveSettings()">
       </div>
     </div>
   </div>
@@ -566,6 +665,77 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   <div class="flash-btn-row" id="flash-btn-row" style="display:none">
     <button class="flash-btn flash-btn-nok" onclick="flashResult(false)">✗ <span data-i="flash-nok">À revoir</span></button>
     <button class="flash-btn flash-btn-ok" onclick="flashResult(true)">✓ <span data-i="flash-ok">Connu</span></button>
+  </div>
+</div>
+
+<!-- ===== SCREEN: REFLEXE ===== -->
+<div class="screen" id="s-reflexe">
+  <div class="reflex-topbar">
+    <button class="back-btn" onclick="stopReflexe();goHome()">← <span data-i="quit">Quitter</span></button>
+    <div class="reflex-meta">
+      <span class="reflex-score-lbl" id="reflex-score-lbl">Score</span>
+      <span style="font-family:var(--font-mono);font-size:1rem" id="reflex-score-val">0</span>
+      <span style="color:var(--text3)">|</span>
+      <span>🔥</span><span class="reflex-streak" id="reflex-streak-val">0</span>
+    </div>
+  </div>
+
+  <!-- Arc timer -->
+  <svg class="reflex-timer-svg" viewBox="0 0 100 100" style="width:90px;height:90px;overflow:visible">
+    <circle class="reflex-timer-bg" cx="50" cy="50" r="40"/>
+    <circle class="reflex-timer-arc" id="reflex-arc" cx="50" cy="50" r="40"
+      stroke-dasharray="251.2" stroke-dashoffset="0"/>
+    <text class="reflex-timer-text" id="reflex-timer-txt" x="50" y="50">3</text>
+  </svg>
+
+  <div class="reflex-progress-wrap">
+    <div class="reflex-progress-track"><div class="reflex-progress-fill" id="reflex-progress-fill" style="width:0%"></div></div>
+    <div class="reflex-progress-lbl" id="reflex-progress-lbl">0 / 20</div>
+  </div>
+
+  <!-- Color+name display OR digit display (depending on direction) -->
+  <div class="reflex-color-stage" id="reflex-color-stage">
+    <div class="reflex-direction" id="reflex-direction-tag"></div>
+    <!-- Forward mode: show swatch, ask digit -->
+    <div id="reflex-fwd-display">
+      <div class="reflex-swatch-wrap">
+        <div class="reflex-swatch reflex-enter" id="reflex-swatch"></div>
+      </div>
+      <div class="reflex-color-name" id="reflex-color-name"></div>
+    </div>
+    <!-- Inverse mode: show digit, ask color -->
+    <div id="reflex-inv-display" style="display:none">
+      <div class="reflex-target" id="reflex-digit-target"></div>
+      <div class="reflex-question" id="reflex-inv-question"></div>
+    </div>
+    <div class="reflex-feedback" id="reflex-feedback"></div>
+  </div>
+
+  <!-- Digit buttons (forward mode) -->
+  <div class="reflex-digit-grid" id="reflex-digit-grid"></div>
+
+  <!-- Color buttons (inverse mode) -->
+  <div class="reflex-color-grid" id="reflex-color-grid" style="display:none"></div>
+</div>
+
+<!-- ===== SCREEN: REFLEXE RESULTS ===== -->
+<div class="screen" id="s-reflexe-results">
+  <div class="reflex-results">
+    <div class="reflex-results-score" id="rr-score">—</div>
+    <div class="reflex-results-sub" id="rr-sub"></div>
+    <div class="reflex-stats-grid">
+      <div class="reflex-stat-item"><div class="reflex-stat-val" id="rr-correct">—</div><div class="reflex-stat-lbl" data-i="rr-correct-lbl">Bonnes</div></div>
+      <div class="reflex-stat-item"><div class="reflex-stat-val" id="rr-streak">—</div><div class="reflex-stat-lbl" data-i="rr-streak-lbl">Meilleure série</div></div>
+      <div class="reflex-stat-item"><div class="reflex-stat-val" id="rr-avg-time">—</div><div class="reflex-stat-lbl" data-i="rr-time-lbl">Temps moyen</div></div>
+    </div>
+    <div class="reflex-mistakes" id="rr-mistakes-wrap" style="display:none">
+      <div class="reflex-mistake-title" data-i="rr-mistakes-title">Erreurs à retravailler</div>
+      <div id="rr-mistakes-list"></div>
+    </div>
+    <div class="btn-row" style="margin-top:1.2rem">
+      <button class="btn-primary" onclick="startReflexe()"><span data-i="btn-retry">Recommencer</span></button>
+      <button class="btn-secondary" onclick="goHome()" data-i="btn-home">Accueil</button>
+    </div>
   </div>
 </div>
 
@@ -695,6 +865,16 @@ const T = {
     'flash-digit':'Chiffre de la bande','flash-mult':'Multiplicateur',
     'hint-revealed':'Indice : bande',
     'fb-hint':'Un indice vous a été accordé — cette bande est révélée.',
+    'mode-reflexe':'🎯 Réflexe',
+    'set-reflex-timer':'Temps par question (Réflexe)','set-reflex-timer-hint':'Recommandé : 2–4 s',
+    'set-reflex-dir':'Direction','set-reflex-dir-hint':'Couleur→Chiffre ou Chiffre→Couleur',
+    'set-reflex-nb':'Nombre de questions (Réflexe)',
+    'reflex-dir-fwd':'🎨→🔢 Couleur','reflex-dir-inv':'🔢→🎨 Chiffre','reflex-dir-mix':'🔀 Mix',
+    'reflex-q-fwd':'Quel chiffre ?','reflex-q-inv':'Couleur pour le chiffre',
+    'reflex-direction-fwd':'Couleur → Chiffre','reflex-direction-inv':'Chiffre → Couleur',
+    'rr-correct-lbl':'Bonnes réponses','rr-streak-lbl':'Meilleure série','rr-time-lbl':'Temps moyen',
+    'rr-mistakes-title':'Erreurs à retravailler',
+    'reflex-timeout':'Temps écoulé !',
   },
   en:{
     tagline:'Master resistor color codes',
@@ -743,6 +923,16 @@ const T = {
     'flash-digit':'Band digit','flash-mult':'Multiplier',
     'hint-revealed':'Hint: band',
     'fb-hint':'A hint was given — this band is revealed.',
+    'mode-reflexe':'🎯 Reflex',
+    'set-reflex-timer':'Time per question (Reflex)','set-reflex-timer-hint':'Recommended: 2–4 s',
+    'set-reflex-dir':'Direction','set-reflex-dir-hint':'Color→Digit or Digit→Color',
+    'set-reflex-nb':'Number of questions (Reflex)',
+    'reflex-dir-fwd':'🎨→🔢 Color','reflex-dir-inv':'🔢→🎨 Digit','reflex-dir-mix':'🔀 Mix',
+    'reflex-q-fwd':'Which digit?','reflex-q-inv':'Color for digit',
+    'reflex-direction-fwd':'Color → Digit','reflex-direction-inv':'Digit → Color',
+    'rr-correct-lbl':'Correct','rr-streak-lbl':'Best streak','rr-time-lbl':'Avg time',
+    'rr-mistakes-title':'Colors to review',
+    'reflex-timeout':'Time\'s up!',
   }
 };
 
@@ -753,7 +943,7 @@ let lang = 'fr';
 let lightMode = false;
 let currentRole = null;
 let currentUser = null;
-let settings = {nbQ:10, bands:[4,5,6], randomColors:false, bothModes:true, timer:0, examMode:false, pin:'', exerciseMode:'both'};
+let settings = {nbQ:10, bands:[4,5,6], randomColors:false, bothModes:true, timer:0, examMode:false, pin:'', exerciseMode:'both', reflexTimer:3, reflexDir:'fwd', reflexNb:20};
 let session = {questions:[],current:0,score:0,xp:0,results:[],startTime:0,streak:0};
 let currentQ = null;
 let triesLeft = 3;
@@ -775,6 +965,13 @@ let flashIdx = 0;
 let flashOk = 0;
 let flashNok = 0;
 let flashRevealed = false;
+
+// Reflexe state
+let reflexeState = {
+  questions:[],idx:0,score:0,streak:0,bestStreak:0,
+  results:[],interval:null,arcInterval:null,
+  timeLeft:0,totalTime:0,direction:'fwd'
+};
 
 function saveUsers(){localStorage.setItem('rp_users',JSON.stringify(users));}
 
@@ -801,8 +998,8 @@ function setLang(l){
     const k=el.getAttribute('data-i');
     if(T[lang][k]) el.textContent=T[lang][k];
   });
-  const modeLabels={fr:{read:'📖 Lecture',compose:'🎨 Composition',both:'🔄 Lecture + Composition',flashcard:'⚡ Flash Cards'},
-                    en:{read:'📖 Read',compose:'🎨 Compose',both:'🔄 Read + Compose',flashcard:'⚡ Flash Cards'}};
+  const modeLabels={fr:{read:'📖 Lecture',compose:'🎨 Composition',both:'🔄 Lecture + Composition',flashcard:'⚡ Flash Cards',reflexe:'🎯 Réflexe'},
+                    en:{read:'📖 Read',compose:'🎨 Compose',both:'🔄 Read + Compose',flashcard:'⚡ Flash Cards',reflexe:'🎯 Reflex'}};
   document.querySelectorAll('.mode-opt[data-i-mode]').forEach(b=>{
     const mk=b.getAttribute('data-i-mode');
     if(modeLabels[lang][mk]) b.textContent=modeLabels[lang][mk];
@@ -819,6 +1016,7 @@ function showScreen(id){
 }
 function goHome(){
   stopTimer();
+  stopReflexe();
   currentRole=null; currentUser=null;
   document.getElementById('user-list-section').style.display='none';
   document.getElementById('role-select').style.display='block';
@@ -925,8 +1123,20 @@ function createNewUser(){
 }
 
 function selectMode(mode){
-  document.querySelectorAll('.mode-opt').forEach(b=>b.classList.toggle('active',b.getAttribute('data-mode')===mode));
+  document.querySelectorAll('.mode-opt[data-mode]').forEach(b=>b.classList.toggle('active',b.getAttribute('data-mode')===mode));
   settings.exerciseMode=mode;
+  // Show/hide reflexe sub-settings
+  const rp=document.getElementById('reflexe-settings-panel');
+  if(rp) rp.style.display=(mode==='reflexe')?'block':'none';
+  localStorage.setItem('rp_settings',JSON.stringify(settings));
+}
+
+function selectReflexDir(dir){
+  ['fwd','inv','mix'].forEach(d=>{
+    const btn=document.getElementById('reflex-dir-'+d);
+    if(btn) btn.classList.toggle('active',d===dir);
+  });
+  settings.reflexDir=dir;
   localStorage.setItem('rp_settings',JSON.stringify(settings));
 }
 
@@ -936,6 +1146,8 @@ function saveSettings(){
   settings.timer = parseInt(document.getElementById('set-timer').value)||0;
   settings.examMode = document.getElementById('set-exam-mode').checked;
   settings.pin = document.getElementById('set-pin').value||'';
+  settings.reflexTimer = parseInt(document.getElementById('set-reflex-timer').value)||3;
+  settings.reflexNb = parseInt(document.getElementById('set-reflex-nb').value)||20;
   settings.bands=[];
   if(document.getElementById('set-4bands').checked) settings.bands.push(4);
   if(document.getElementById('set-5bands').checked) settings.bands.push(5);
@@ -964,8 +1176,13 @@ function renderTrainer(){
   document.getElementById('set-timer').value=settings.timer||0;
   document.getElementById('set-exam-mode').checked=!!settings.examMode;
   document.getElementById('set-pin').value=settings.pin||'';
+  document.getElementById('set-reflex-timer').value=settings.reflexTimer||3;
+  document.getElementById('set-reflex-nb').value=settings.reflexNb||20;
   const m=settings.exerciseMode||'both';
-  document.querySelectorAll('.mode-opt').forEach(b=>b.classList.toggle('active',b.getAttribute('data-mode')===m));
+  document.querySelectorAll('.mode-opt[data-mode]').forEach(b=>b.classList.toggle('active',b.getAttribute('data-mode')===m));
+  const rp=document.getElementById('reflexe-settings-panel');
+  if(rp) rp.style.display=(m==='reflexe')?'block':'none';
+  selectReflexDir(settings.reflexDir||'fwd');
   const studs=users.filter(u=>u.role==='student');
   document.getElementById('stat-total').textContent=studs.length;
   const totalSessions=studs.reduce((a,u)=>a+(u.sessions||0),0);
@@ -1132,6 +1349,9 @@ function startExercise(){
 
   // Flashcard mode
   if(settings.exerciseMode==='flashcard'){startFlashCards();return;}
+
+  // Reflexe mode
+  if(settings.exerciseMode==='reflexe'){startReflexe();return;}
 
   session={questions:[],current:0,score:0,xp:currentUser?currentUser.xp:0,results:[],startTime:Date.now(),streak:0};
   colorErrors={};
@@ -1582,6 +1802,353 @@ function showResults(){
 }
 
 function printReport(){window.print();}
+
+// ============================================================
+// REFLEXE MODE ENGINE
+// ============================================================
+// The 10 digit colors only (Noir=0 … Blanc=9)
+const DIGIT_COLORS = COLORS.filter(c=>c.digit!==null); // indices 0–9
+
+function buildReflexeQuestions(nb, dir){
+  const qs=[];
+  for(let i=0;i<nb;i++){
+    // pick random digit color
+    const ci=Math.floor(Math.random()*DIGIT_COLORS.length);
+    const color=DIGIT_COLORS[ci];
+    const globalIdx=COLORS.indexOf(color);
+    // direction: fwd=couleur→chiffre, inv=chiffre→couleur, mix=random
+    let qDir=dir;
+    if(dir==='mix') qDir=Math.random()<0.5?'fwd':'inv';
+    qs.push({colorIdx:globalIdx, color, dir:qDir});
+  }
+  return qs;
+}
+
+function startReflexe(){
+  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
+  Object.assign(settings, saved);
+  const nb=settings.reflexNb||20;
+  const dir=settings.reflexDir||'fwd';
+  const timePerQ=Math.max(1, settings.reflexTimer||3);
+
+  reflexeState={
+    questions:buildReflexeQuestions(nb,dir),
+    idx:0, score:0, streak:0, bestStreak:0,
+    results:[], interval:null, arcInterval:null,
+    timeLeft:timePerQ, totalTime:timePerQ,
+    direction:dir, responseTimes:[]
+  };
+
+  // Build digit buttons (0-9 in grid, shuffled each round if random)
+  buildReflexeDigitGrid();
+  // Build color buttons
+  buildReflexeColorGrid();
+
+  showScreen('s-reflexe');
+  loadReflexeQuestion();
+}
+
+function buildReflexeDigitGrid(){
+  const grid=document.getElementById('reflex-digit-grid');
+  grid.innerHTML='';
+  // Two rows of 5: 0-4 top, 5-9 bottom
+  const digits=[0,1,2,3,4,5,6,7,8,9];
+  digits.forEach(d=>{
+    const btn=document.createElement('button');
+    btn.className='reflex-digit-btn';
+    btn.id='reflex-digit-'+d;
+    btn.textContent=d;
+    btn.onclick=()=>answerReflexe(d);
+    grid.appendChild(btn);
+  });
+}
+
+function buildReflexeColorGrid(){
+  const grid=document.getElementById('reflex-color-grid');
+  grid.innerHTML='';
+  DIGIT_COLORS.forEach((c,i)=>{
+    const globalIdx=COLORS.indexOf(c);
+    const btn=document.createElement('button');
+    btn.className='reflex-color-choice';
+    btn.id='reflex-color-choice-'+globalIdx;
+    btn.style.background=c.hex;
+    btn.style.border='2px solid '+c.border;
+    btn.setAttribute('data-ci', globalIdx);
+    btn.innerHTML=`<span class="reflex-color-choice-label">${lang==='fr'?c.name:c.en}</span>`;
+    btn.onclick=()=>answerReflexeColor(globalIdx);
+    grid.appendChild(btn);
+  });
+}
+
+function loadReflexeQuestion(){
+  const st=reflexeState;
+  if(st.idx>=st.questions.length){showReflexeResults();return;}
+
+  const q=st.questions[st.idx];
+  const c=q.color;
+  const isFwd=(q.dir==='fwd');
+
+  // Update progress
+  const pct=Math.round((st.idx/st.questions.length)*100);
+  document.getElementById('reflex-progress-fill').style.width=pct+'%';
+  document.getElementById('reflex-progress-lbl').textContent=(st.idx+1)+' / '+st.questions.length;
+  document.getElementById('reflex-score-val').textContent=st.score;
+  document.getElementById('reflex-streak-val').textContent=st.streak;
+
+  // Direction tag
+  document.getElementById('reflex-direction-tag').textContent=t(isFwd?'reflex-direction-fwd':'reflex-direction-inv');
+
+  // Show/hide panels
+  document.getElementById('reflex-fwd-display').style.display=isFwd?'flex':'none';
+  document.getElementById('reflex-fwd-display').style.flexDirection='column';
+  document.getElementById('reflex-fwd-display').style.alignItems='center';
+  document.getElementById('reflex-inv-display').style.display=isFwd?'none':'flex';
+  document.getElementById('reflex-inv-display').style.flexDirection='column';
+  document.getElementById('reflex-inv-display').style.alignItems='center';
+  document.getElementById('reflex-digit-grid').style.display=isFwd?'grid':'none';
+  document.getElementById('reflex-color-grid').style.display=isFwd?'none':'grid';
+
+  if(isFwd){
+    // Show swatch + name, ask digit
+    const swatch=document.getElementById('reflex-swatch');
+    swatch.style.background=c.hex;
+    swatch.style.border='3px solid '+c.border;
+    swatch.classList.remove('reflex-enter');
+    void swatch.offsetWidth; // reflow
+    swatch.classList.add('reflex-enter');
+    document.getElementById('reflex-color-name').textContent=lang==='fr'?c.name:c.en;
+  } else {
+    // Show digit, ask color
+    document.getElementById('reflex-digit-target').textContent=c.digit;
+    document.getElementById('reflex-inv-question').textContent=t('reflex-q-inv')+' '+c.digit+' ?';
+    // Animate color grid
+    document.querySelectorAll('.reflex-color-choice').forEach(b=>{
+      b.classList.remove('reflex-enter');
+      void b.offsetWidth;
+      b.classList.add('reflex-enter');
+    });
+  }
+
+  // Clear feedback
+  const fb=document.getElementById('reflex-feedback');
+  fb.textContent='';
+  fb.className='reflex-feedback';
+
+  // Reset all btn states
+  document.querySelectorAll('.reflex-digit-btn').forEach(b=>{
+    b.classList.remove('flash-correct','flash-wrong');
+    b.disabled=false;
+  });
+  document.querySelectorAll('.reflex-color-choice').forEach(b=>{
+    b.classList.remove('flash-correct','flash-wrong');
+    b.style.pointerEvents='auto';
+  });
+
+  // Start arc timer
+  startReflexeTimer();
+  st._qStartTime=Date.now();
+}
+
+function startReflexeTimer(){
+  stopReflexeTimers();
+  const st=reflexeState;
+  const total=settings.reflexTimer||3;
+  st.timeLeft=total;
+  st.totalTime=total;
+  const circumference=251.2; // 2πr, r=40
+  const arc=document.getElementById('reflex-arc');
+  const txt=document.getElementById('reflex-timer-txt');
+
+  function updateArc(){
+    const frac=st.timeLeft/st.totalTime;
+    const offset=circumference*(1-frac);
+    arc.setAttribute('stroke-dashoffset', offset);
+    // Color: green→yellow→red
+    if(frac>0.5) arc.setAttribute('stroke','var(--success)');
+    else if(frac>0.25) arc.setAttribute('stroke','var(--warn)');
+    else arc.setAttribute('stroke','var(--error)');
+    txt.textContent=Math.ceil(st.timeLeft);
+    txt.setAttribute('fill', frac<=0.25?'var(--error)':'var(--text)');
+  }
+  updateArc();
+
+  const TICK=50; // ms
+  st.arcInterval=setInterval(()=>{
+    st.timeLeft-=TICK/1000;
+    if(st.timeLeft<=0){
+      st.timeLeft=0;
+      updateArc();
+      stopReflexeTimers();
+      onReflexeTimeout();
+    } else {
+      updateArc();
+    }
+  },TICK);
+}
+
+function stopReflexeTimers(){
+  const st=reflexeState;
+  if(st.arcInterval){clearInterval(st.arcInterval);st.arcInterval=null;}
+  if(st.interval){clearInterval(st.interval);st.interval=null;}
+}
+
+function onReflexeTimeout(){
+  const st=reflexeState;
+  const q=st.questions[st.idx];
+  const isFwd=(q.dir==='fwd');
+  // Flash correct answer
+  if(isFwd){
+    const correctBtn=document.getElementById('reflex-digit-'+q.color.digit);
+    if(correctBtn){correctBtn.classList.add('flash-wrong');}
+    document.querySelectorAll('.reflex-digit-btn').forEach(b=>b.disabled=true);
+  } else {
+    const correctBtn=document.getElementById('reflex-color-choice-'+COLORS.indexOf(q.color));
+    if(correctBtn){correctBtn.classList.add('flash-wrong');correctBtn.style.pointerEvents='none';}
+    document.querySelectorAll('.reflex-color-choice').forEach(b=>b.style.pointerEvents='none');
+  }
+  const fb=document.getElementById('reflex-feedback');
+  fb.textContent='⏱ '+t('reflex-timeout')+' → '+(isFwd?q.color.digit:(lang==='fr'?q.color.name:q.color.en));
+  fb.className='reflex-feedback ko';
+  st.streak=0;
+  st.results.push({colorIdx:COLORS.indexOf(q.color),correct:false,responseTime:st.totalTime,given:null,dir:q.dir});
+  document.getElementById('reflex-streak-val').textContent=0;
+  setTimeout(()=>{st.idx++;loadReflexeQuestion();},900);
+}
+
+function answerReflexe(digit){
+  stopReflexeTimers();
+  const st=reflexeState;
+  const q=st.questions[st.idx];
+  const correct=(digit===q.color.digit);
+  const responseTime=st.totalTime-(st.timeLeft);
+  st.responseTimes=st.responseTimes||[];
+  st.responseTimes.push(responseTime);
+
+  const btn=document.getElementById('reflex-digit-'+digit);
+  const fb=document.getElementById('reflex-feedback');
+
+  if(correct){
+    if(btn) btn.classList.add('flash-correct');
+    fb.textContent='✓ '+digit;
+    fb.className='reflex-feedback ok';
+    st.score++;
+    st.streak++;
+    if(st.streak>st.bestStreak) st.bestStreak=st.streak;
+    st.results.push({colorIdx:COLORS.indexOf(q.color),correct:true,responseTime,given:digit,dir:q.dir});
+  } else {
+    if(btn) btn.classList.add('flash-wrong');
+    // Highlight correct
+    const correctBtn=document.getElementById('reflex-digit-'+q.color.digit);
+    if(correctBtn) setTimeout(()=>correctBtn.classList.add('flash-correct'),80);
+    fb.textContent='✗  → '+q.color.digit;
+    fb.className='reflex-feedback ko';
+    st.streak=0;
+    st.results.push({colorIdx:COLORS.indexOf(q.color),correct:false,responseTime,given:digit,dir:q.dir});
+    // Track for heatmap
+    colorErrors[COLORS.indexOf(q.color)]=(colorErrors[COLORS.indexOf(q.color)]||0)+1;
+  }
+  document.querySelectorAll('.reflex-digit-btn').forEach(b=>b.disabled=true);
+  document.getElementById('reflex-score-val').textContent=st.score;
+  document.getElementById('reflex-streak-val').textContent=st.streak;
+  setTimeout(()=>{st.idx++;loadReflexeQuestion();},correct?350:700);
+}
+
+function answerReflexeColor(colorIdx){
+  stopReflexeTimers();
+  const st=reflexeState;
+  const q=st.questions[st.idx];
+  const correct=(colorIdx===COLORS.indexOf(q.color));
+  const responseTime=st.totalTime-(st.timeLeft);
+  st.responseTimes=st.responseTimes||[];
+  st.responseTimes.push(responseTime);
+
+  document.querySelectorAll('.reflex-color-choice').forEach(b=>b.style.pointerEvents='none');
+  const btn=document.getElementById('reflex-color-choice-'+colorIdx);
+  const fb=document.getElementById('reflex-feedback');
+
+  if(correct){
+    if(btn) btn.classList.add('flash-correct');
+    fb.textContent='✓ '+(lang==='fr'?q.color.name:q.color.en);
+    fb.className='reflex-feedback ok';
+    st.score++;
+    st.streak++;
+    if(st.streak>st.bestStreak) st.bestStreak=st.streak;
+    st.results.push({colorIdx:COLORS.indexOf(q.color),correct:true,responseTime,given:colorIdx,dir:q.dir});
+  } else {
+    if(btn) btn.classList.add('flash-wrong');
+    const correctBtn=document.getElementById('reflex-color-choice-'+COLORS.indexOf(q.color));
+    if(correctBtn) setTimeout(()=>correctBtn.classList.add('flash-correct'),80);
+    fb.textContent='✗ → '+(lang==='fr'?q.color.name:q.color.en);
+    fb.className='reflex-feedback ko';
+    st.streak=0;
+    st.results.push({colorIdx:COLORS.indexOf(q.color),correct:false,responseTime,given:colorIdx,dir:q.dir});
+    colorErrors[COLORS.indexOf(q.color)]=(colorErrors[COLORS.indexOf(q.color)]||0)+1;
+  }
+  document.getElementById('reflex-score-val').textContent=st.score;
+  document.getElementById('reflex-streak-val').textContent=st.streak;
+  setTimeout(()=>{st.idx++;loadReflexeQuestion();},correct?350:700);
+}
+
+function stopReflexe(){stopReflexeTimers();}
+
+function showReflexeResults(){
+  stopReflexeTimers();
+  const st=reflexeState;
+  const total=st.questions.length;
+  const correct=st.score;
+  const pct=Math.round((correct/total)*100);
+  const times=st.responseTimes||[];
+  const avgTime=times.length?Math.round((times.reduce((a,b)=>a+b,0)/times.length)*10)/10:0;
+
+  document.getElementById('rr-score').textContent=pct+'%';
+  document.getElementById('rr-sub').textContent=correct+' / '+total+(lang==='fr'?' bonnes réponses':' correct');
+  document.getElementById('rr-correct').textContent=correct+'/'+total;
+  document.getElementById('rr-streak').textContent=st.bestStreak;
+  document.getElementById('rr-avg-time').textContent=avgTime+'s';
+
+  // Mistakes breakdown
+  const mistakes=st.results.filter(r=>!r.correct);
+  const mistakeWrap=document.getElementById('rr-mistakes-wrap');
+  const mistakeList=document.getElementById('rr-mistakes-list');
+  mistakeList.innerHTML='';
+  if(mistakes.length>0){
+    mistakeWrap.style.display='block';
+    // Group by color
+    const byColor={};
+    mistakes.forEach(m=>{
+      byColor[m.colorIdx]=(byColor[m.colorIdx]||0)+1;
+    });
+    Object.entries(byColor).sort((a,b)=>b[1]-a[1]).forEach(([ci,cnt])=>{
+      const c=COLORS[parseInt(ci)];
+      if(!c) return;
+      const row=document.createElement('div');
+      row.className='reflex-mistake-row';
+      const givenExamples=mistakes.filter(m=>m.colorIdx===parseInt(ci)&&m.given!==null).map(m=>m.dir==='fwd'?m.given:(lang==='fr'?(COLORS[m.given]||{name:'?'}).name:(COLORS[m.given]||{en:'?'}).en));
+      const givenStr=givenExamples.length?[...new Set(givenExamples)].slice(0,3).join(', '):'—';
+      row.innerHTML=`
+        <div class="reflex-mistake-swatch" style="background:${c.hex};border:1px solid ${c.border}"></div>
+        <span>${lang==='fr'?c.name:c.en} (${c.digit})</span>
+        <span style="color:var(--text2);font-size:.78rem;margin-left:.3rem">${lang==='fr'?'Réponse(s) donnée(s)':'Given:'} <span class="reflex-mistake-given">${givenStr}</span></span>
+        <span class="reflex-mistake-correct">×${cnt}</span>
+      `;
+      mistakeList.appendChild(row);
+    });
+  } else {
+    mistakeWrap.style.display='none';
+  }
+
+  // XP
+  const xpGain=correct*5+(st.bestStreak>=10?50:st.bestStreak>=5?20:0);
+  if(currentUser){
+    currentUser.xp=(currentUser.xp||0)+xpGain;
+    currentUser.level=Math.floor(currentUser.xp/300);
+    currentUser.sessions=(currentUser.sessions||0)+1;
+    currentUser.lastScore=pct;
+    saveUsers();
+  }
+
+  showScreen('s-reflexe-results');
+}
 
 // ============================================================
 // FLASH CARDS
