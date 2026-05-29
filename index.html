@@ -205,6 +205,10 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .lang-btn{padding:.3rem .7rem;font-size:.8rem;font-family:var(--font-mono);background:transparent;border:none;color:var(--text2);cursor:pointer;transition:all .2s}
 .lang-btn.active{background:var(--accent);color:#000}
 
+.mode-selector{display:flex;gap:.5rem;flex-wrap:wrap}
+.mode-opt{background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text2);padding:.45rem 1rem;font-family:var(--font-body);font-size:.88rem;cursor:pointer;transition:all .2s}
+.mode-opt:hover{border-color:var(--text2);color:var(--text)}
+.mode-opt.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600}
 @keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @keyframes slidein{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 @media(max-width:500px){.color-btn{width:22px;height:22px}.profile-grid{grid-template-columns:1fr 1fr}.results-score{font-size:2.5rem}}
@@ -287,9 +291,13 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <div><div data-i="set-random">Couleurs en ordre aléatoire</div><div class="hint" data-i="set-random-hint">Mélange la palette de réponse</div></div>
       <label class="toggle"><input type="checkbox" id="set-random-colors" onchange="saveSettings()"><span class="toggle-slider"></span></label>
     </div>
-    <div class="settings-row">
-      <div><div data-i="set-both-modes">Activer les deux modes</div><div class="hint" data-i="set-both-modes-hint">Lecture + Composition</div></div>
-      <label class="toggle"><input type="checkbox" id="set-both-modes" checked onchange="saveSettings()"><span class="toggle-slider"></span></label>
+    <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:.7rem">
+      <div data-i="set-mode-label">Mode d'exercice</div>
+      <div class="mode-selector" id="mode-selector">
+        <button class="mode-opt" data-mode="read" onclick="selectMode('read')" data-i-mode="read">📖 Lecture</button>
+        <button class="mode-opt" data-mode="compose" onclick="selectMode('compose')" data-i-mode="compose">🎨 Composition</button>
+        <button class="mode-opt active" data-mode="both" onclick="selectMode('both')" data-i-mode="both">🔄 Lecture + Composition</button>
+      </div>
     </div>
   </div>
 
@@ -477,7 +485,7 @@ const T = {
     'set-nb-q':'Nombre de questions','set-nb-q-hint':'Par session d\'exercice',
     'set-bands':'Types de bandes autorisés','set-random':'Couleurs en ordre aléatoire',
     'set-random-hint':'Mélange la palette de réponse',
-    'set-both-modes':'Activer les deux modes','set-both-modes-hint':'Lecture + Composition',
+    'set-mode-label':'Mode d\'exercice',
     'th-name':'Nom','th-level':'Niveau','th-score':'Dernier score','th-sessions':'Sessions','th-progress':'Progression',
     'lbl-value':'Valeur','lbl-tolerance':'Tolérance','lbl-coeff':'Coeff. temp.',
     'read-q-4':'Lisez cette résistance à 4 bandes et entrez sa valeur.',
@@ -515,7 +523,7 @@ const T = {
     'set-nb-q':'Number of questions','set-nb-q-hint':'Per exercise session',
     'set-bands':'Allowed band types','set-random':'Random color order',
     'set-random-hint':'Shuffle the answer palette',
-    'set-both-modes':'Enable both modes','set-both-modes-hint':'Read + Compose',
+    'set-mode-label':'Exercise mode',
     'th-name':'Name','th-level':'Level','th-score':'Last score','th-sessions':'Sessions','th-progress':'Progress',
     'lbl-value':'Value','lbl-tolerance':'Tolerance','lbl-coeff':'Temp. coeff.',
     'read-q-4':'Read this 4-band resistor and enter its value.',
@@ -560,10 +568,16 @@ if(!users.length) users = [
 ];
 
 function saveUsers(){localStorage.setItem('rp_users',JSON.stringify(users));}
+function selectMode(mode){
+  document.querySelectorAll('.mode-opt').forEach(b=>b.classList.toggle('active',b.getAttribute('data-mode')===mode));
+  settings.exerciseMode=mode;
+  localStorage.setItem('rp_settings',JSON.stringify(settings));
+}
+
 function saveSettings(){
   settings.nbQ = parseInt(document.getElementById('set-nb-questions').value)||10;
   settings.randomColors = document.getElementById('set-random-colors').checked;
-  settings.bothModes = document.getElementById('set-both-modes').checked;
+  // exerciseMode géré par selectMode()
   settings.bands=[];
   if(document.getElementById('set-4bands').checked) settings.bands.push(4);
   if(document.getElementById('set-5bands').checked) settings.bands.push(5);
@@ -584,6 +598,13 @@ function setLang(l){
   document.querySelectorAll('[data-i]').forEach(el=>{
     const k=el.getAttribute('data-i');
     if(T[lang][k]) el.textContent=T[lang][k];
+  });
+  // Boutons de mode
+  const modeLabels={fr:{read:'📖 Lecture',compose:'🎨 Composition',both:'🔄 Lecture + Composition'},
+                    en:{read:'📖 Read',compose:'🎨 Compose',both:'🔄 Read + Compose'}};
+  document.querySelectorAll('.mode-opt[data-i-mode]').forEach(b=>{
+    const mk=b.getAttribute('data-i-mode');
+    if(modeLabels[lang][mk]) b.textContent=modeLabels[lang][mk];
   });
   if(currentRole==='trainer') renderTrainer();
 }
@@ -657,10 +678,11 @@ function renderTrainer(){
   if(saved.nbQ) settings=Object.assign(settings,saved);
   document.getElementById('set-nb-questions').value=settings.nbQ;
   document.getElementById('set-random-colors').checked=!!settings.randomColors;
-  document.getElementById('set-both-modes').checked=settings.bothModes!==false;
   document.getElementById('set-4bands').checked=!settings.bands||settings.bands.includes(4);
   document.getElementById('set-5bands').checked=!settings.bands||settings.bands.includes(5);
   document.getElementById('set-6bands').checked=!settings.bands||settings.bands.includes(6);
+  const m=settings.exerciseMode||'both';
+  document.querySelectorAll('.mode-opt').forEach(b=>b.classList.toggle('active',b.getAttribute('data-mode')===m));
   const studs=users.filter(u=>u.role==='student');
   document.getElementById('stat-total').textContent=studs.length;
   const totalSessions=studs.reduce((a,u)=>a+(u.sessions||0),0);
@@ -791,14 +813,15 @@ function generateQuestion(){
   const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
   if(saved.bands) settings.bands=saved.bands;
   if(saved.randomColors!==undefined) settings.randomColors=saved.randomColors;
-  if(saved.bothModes!==undefined) settings.bothModes=saved.bothModes;
+  if(saved.exerciseMode) settings.exerciseMode=saved.exerciseMode;
   const bands=settings.bands&&settings.bands.length?settings.bands:[4,5,6];
   const nbBands=bands[Math.floor(Math.random()*bands.length)];
   // Choisir la tolérance EN PREMIER, puis la valeur dans la bonne série
   const tol=pickTolForBands(nbBands);
   const value=getValueForTol(tol);
   const resistor=valueToColor(value,nbBands);
-  const mode=settings.bothModes?(Math.random()<0.5?'read':'compose'):'read';
+  const em=settings.exerciseMode||'both';
+  const mode=em==='both'?(Math.random()<0.5?'read':'compose'):em;
   return {resistor, mode, nbBands};
 }
 
