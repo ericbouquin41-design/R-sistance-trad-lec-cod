@@ -446,7 +446,15 @@ const COLORS = [
   {name:'Argent', en:'Silver', hex:'#C0C0C0', digit:null, mult:0.01, tol:10,    coeff:null,  border:'#d8d8d8'},
 ];
 
-const E24 = [1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+const E12  = [1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+const E24  = [1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
+const E48  = [1.00,1.05,1.10,1.15,1.21,1.27,1.33,1.40,1.47,1.54,1.62,1.69,1.78,1.87,1.96,2.05,2.15,2.26,2.37,2.49,2.61,2.74,2.87,3.01,3.16,3.32,3.48,3.65,3.83,4.02,4.22,4.42,4.64,4.87,5.11,5.36,5.62,5.90,6.19,6.49,6.81,7.15,7.50,7.87,8.25,8.66,9.09,9.53];
+const E96  = [1.00,1.02,1.05,1.07,1.10,1.13,1.15,1.18,1.21,1.24,1.27,1.30,1.33,1.37,1.40,1.43,1.47,1.50,1.54,1.58,1.62,1.65,1.69,1.74,1.78,1.82,1.87,1.91,1.96,2.00,2.05,2.10,2.15,2.21,2.26,2.32,2.37,2.43,2.49,2.55,2.61,2.67,2.74,2.80,2.87,2.94,3.01,3.09,3.16,3.24,3.32,3.40,3.48,3.57,3.65,3.74,3.83,3.92,4.02,4.12,4.22,4.32,4.42,4.53,4.64,4.75,4.87,4.99,5.11,5.23,5.36,5.49,5.62,5.76,5.90,6.04,6.19,6.34,6.49,6.65,6.81,6.98,7.15,7.32,7.50,7.68,7.87,8.06,8.25,8.45,8.66,8.87,9.09,9.31,9.53,9.76];
+const E192 = [1.00,1.01,1.02,1.04,1.05,1.06,1.07,1.09,1.10,1.11,1.13,1.14,1.15,1.17,1.18,1.20,1.21,1.23,1.24,1.26,1.27,1.29,1.30,1.32,1.33,1.35,1.37,1.38,1.40,1.42,1.43,1.45,1.47,1.49,1.50,1.52,1.54,1.56,1.58,1.60,1.62,1.64,1.65,1.67,1.69,1.72,1.74,1.76,1.78,1.80,1.82,1.84,1.87,1.89,1.91,1.93,1.96,1.98,2.00,2.03,2.05,2.08,2.10,2.13,2.15,2.18,2.21,2.23,2.26,2.29,2.32,2.34,2.37,2.40,2.43,2.46,2.49,2.52,2.55,2.58,2.61,2.64,2.67,2.71,2.74,2.77,2.80,2.84,2.87,2.91,2.94,2.98,3.01,3.05,3.09,3.12,3.16,3.20,3.24,3.28,3.32,3.36,3.40,3.44,3.48,3.52,3.57,3.61,3.65,3.70,3.74,3.79,3.83,3.88,3.92,3.97,4.02,4.07,4.12,4.17,4.22,4.27,4.32,4.37,4.42,4.48,4.53,4.59,4.64,4.70,4.75,4.81,4.87,4.93,4.99,5.05,5.11,5.17,5.23,5.30,5.36,5.42,5.49,5.56,5.62,5.69,5.76,5.83,5.90,5.97,6.04,6.12,6.19,6.26,6.34,6.42,6.49,6.57,6.65,6.73,6.81,6.90,6.98,7.06,7.15,7.23,7.32,7.41,7.50,7.59,7.68,7.77,7.87,7.96,8.06,8.16,8.25,8.35,8.45,8.56,8.66,8.76,8.87,8.98,9.09,9.20,9.31,9.42,9.53,9.65,9.76,9.88];
+
+// Mapping tolérance → série normalisée
+const TOL_TO_SERIES = {10:E12, 5:E24, 2:E48, 1:E96, 0.5:E192, 0.25:E192, 0.1:E192, 0.05:E192};
+
 const DECADES = [1,10,100,1000,10000,100000,1000000,10000000];
 
 const TOL_COLORS_4 = [COLORS[10],COLORS[11],COLORS[1],COLORS[2],COLORS[5],COLORS[6],COLORS[7],COLORS[8]];
@@ -672,56 +680,90 @@ function renderTrainer(){
 // ============================================================
 // EXERCISE ENGINE
 // ============================================================
-function getE24Value(){
-  const base=E24[Math.floor(Math.random()*E24.length)];
-  const dec=DECADES[Math.floor(Math.random()*(DECADES.length-1))];
-  return Math.round(base*dec);
+// Choisit une tolérance au hasard en fonction du nb de bandes
+// 4 bandes : ±5% (or) ou ±10% (argent) → E24 ou E12
+// 5/6 bandes : ±1% ±2% (voire 0.5/0.25/0.1/0.05) → E96/E48/E192
+function pickTolForBands(nbBands){
+  if(nbBands===4){
+    return Math.random()<0.6 ? 5 : 10; // majoritairement ±5%
+  } else {
+    const pool=[1,1,1,2,2,0.5,0.25,0.1,0.05];
+    return pool[Math.floor(Math.random()*pool.length)];
+  }
+}
+
+function getSeriesForTol(tol){
+  return TOL_TO_SERIES[tol] || E24;
+}
+
+function getValueForTol(tol){
+  const series = getSeriesForTol(tol);
+  const base   = series[Math.floor(Math.random()*series.length)];
+  const dec    = DECADES[Math.floor(Math.random()*(DECADES.length-1))];
+  // Arrondi propre pour éviter les flottants parasites
+  return Math.round(base * dec * 1000) / 1000;
+}
+
+// Trouve le bon multiplicateur COLORS en cherchant la puissance de 10 la plus proche
+function findMultColor(multVal){
+  let best=-1, bestDiff=Infinity;
+  COLORS.forEach((c,i)=>{
+    if(c.mult!=null){
+      const d=Math.abs(c.mult-multVal);
+      if(d<bestDiff){bestDiff=d;best=i;}
+    }
+  });
+  return best;
 }
 
 function valueToColor(val, nbBands){
-  // Returns array of color indices
-  const digits=[];
+  const tol  = pickTolForBands(nbBands);
+  const tolColors = nbBands===4 ? TOL_COLORS_4 : TOL_COLORS_5;
+  const tolColor  = tolColors.find(c=>c.tol===tol) || tolColors[0];
+  const tolIdx    = COLORS.indexOf(tolColor);
+
   if(nbBands===4){
-    // 2 sig figs + mult + tol
+    // 2 chiffres significatifs — la valeur DOIT être dans E12 ou E24
     let v=val; let mult=0;
     while(v>=100){v/=10;mult++;}
     while(v<10&&v>0){v*=10;mult--;}
+    v=Math.round(v);
     const d1=Math.floor(v/10);
     const d2=Math.floor(v%10);
-    const tolColors=TOL_COLORS_4;
-    const tolIdx=Math.floor(Math.random()*tolColors.length);
+    const multIdx=findMultColor(Math.pow(10,mult));
     return {
-      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),COLORS.findIndex(c=>c.mult===Math.pow(10,mult)),COLORS.indexOf(tolColors[tolIdx])],
-      value:val, tol:tolColors[tolIdx].tol, coeff:null, nbBands:4
+      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),multIdx,tolIdx],
+      value:val, tol, coeff:null, nbBands:4
     };
   }
   if(nbBands===5){
+    // 3 chiffres significatifs — la valeur peut être dans E48/E96/E192
     let v=val; let mult=0;
     while(v>=1000){v/=10;mult++;}
     while(v<100&&v>0){v*=10;mult--;}
+    v=Math.round(v);
     const d1=Math.floor(v/100);
     const d2=Math.floor((v%100)/10);
     const d3=Math.floor(v%10);
-    const tolColors=TOL_COLORS_5;
-    const tolIdx=Math.floor(Math.random()*tolColors.length);
+    const multIdx=findMultColor(Math.pow(10,mult));
     return {
-      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),COLORS.findIndex(c=>c.digit===d3),COLORS.findIndex(c=>c.mult===Math.pow(10,mult)),COLORS.indexOf(tolColors[tolIdx])],
-      value:val, tol:tolColors[tolIdx].tol, coeff:null, nbBands:5
+      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),COLORS.findIndex(c=>c.digit===d3),multIdx,tolIdx],
+      value:val, tol, coeff:null, nbBands:5
     };
   }
   if(nbBands===6){
     let v=val; let mult=0;
     while(v>=1000){v/=10;mult++;}
     while(v<100&&v>0){v*=10;mult--;}
+    v=Math.round(v);
     const d1=Math.floor(v/100);
     const d2=Math.floor((v%100)/10);
     const d3=Math.floor(v%10);
-    const tolColors=TOL_COLORS_5;
-    const tolIdx=Math.floor(Math.random()*tolColors.length);
+    const multIdx=findMultColor(Math.pow(10,mult));
     const coeffIdx=Math.floor(Math.random()*COEFF_COLORS.length);
     return {
-      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),COLORS.findIndex(c=>c.digit===d3),COLORS.findIndex(c=>c.mult===Math.pow(10,mult)),COLORS.indexOf(tolColors[tolIdx]),COLORS.indexOf(COEFF_COLORS[coeffIdx])],
-      value:val, tol:tolColors[tolIdx].tol, coeff:COEFF_COLORS[coeffIdx].coeff, nbBands:6
+      bands:[COLORS.findIndex(c=>c.digit===d1),COLORS.findIndex(c=>c.digit===d2),COLORS.findIndex(c=>c.digit===d3),multIdx,tolIdx,COLORS.indexOf(COEFF_COLORS[coeffIdx])],
+      value:val, tol, coeff:COEFF_COLORS[coeffIdx].coeff, nbBands:6
     };
   }
 }
@@ -752,7 +794,9 @@ function generateQuestion(){
   if(saved.bothModes!==undefined) settings.bothModes=saved.bothModes;
   const bands=settings.bands&&settings.bands.length?settings.bands:[4,5,6];
   const nbBands=bands[Math.floor(Math.random()*bands.length)];
-  const value=getE24Value();
+  // Choisir la tolérance EN PREMIER, puis la valeur dans la bonne série
+  const tol=pickTolForBands(nbBands);
+  const value=getValueForTol(tol);
   const resistor=valueToColor(value,nbBands);
   const mode=settings.bothModes?(Math.random()<0.5?'read':'compose'):'read';
   return {resistor, mode, nbBands};
@@ -796,8 +840,8 @@ function loadQuestion(idx){
   // Tries
   renderTries();
 
-  // Draw resistor
-  drawResistor(currentQ.resistor.bands, currentQ.resistor.nbBands);
+  // Draw resistor (mode lecture = vraies couleurs ; mode compose = sera redessiné après)
+  if(currentQ.mode==='read') drawResistor(currentQ.resistor.bands, currentQ.resistor.nbBands);
 
   // Show right UI
   document.getElementById('read-mode-ui').style.display='none';
@@ -816,6 +860,8 @@ function loadQuestion(idx){
     document.getElementById('compose-mode-ui').style.display='block';
     document.getElementById('compose-question').textContent=t('compose-q');
     document.getElementById('compose-value-display').textContent=formatValue(currentQ.resistor.value)+' ±'+currentQ.resistor.tol+'%'+(currentQ.resistor.coeff?' — '+currentQ.resistor.coeff+'ppm':'');
+    // Résistance vierge : tous les anneaux sont null au départ
+    drawResistor(currentQ.resistor.bands, currentQ.resistor.nbBands, new Array(currentQ.resistor.nbBands).fill(null));
     renderBandSelectors();
   }
 }
@@ -833,7 +879,10 @@ function renderTries(){
 // ============================================================
 // RESISTOR DRAWING
 // ============================================================
-function drawResistor(bands, nbBands){
+// bandColorOverrides : tableau optionnel [ci0, ci1, ...] pour le mode composition
+// si null → on affiche les vraies couleurs (mode lecture)
+// si tableau → on affiche les overrides (null = anneau vierge)
+function drawResistor(bands, nbBands, bandColorOverrides){
   const svg=document.getElementById('resistor-svg');
   const W=500,H=120;
   const bodyX=100,bodyW=300,bodyH=60,bodyY=(H-bodyH)/2;
@@ -843,30 +892,83 @@ function drawResistor(bands, nbBands){
 
   let html=`
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="rsbg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#c8a060"/>
       <stop offset="50%" stop-color="#d4b070"/>
       <stop offset="100%" stop-color="#b08040"/>
     </linearGradient>
   </defs>
-  <!-- leads -->
   <line x1="0" y1="${H/2}" x2="${bodyX}" y2="${H/2}" stroke="#aaa" stroke-width="4"/>
   <line x1="${bodyX+bodyW}" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="#aaa" stroke-width="4"/>
-  <!-- body -->
-  <rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="18" fill="url(#bg)" stroke="#a08040" stroke-width="1.5"/>
+  <rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="18" fill="url(#rsbg)" stroke="#a08040" stroke-width="1.5"/>
   `;
 
-  // Band positions
   for(let i=0;i<nbBands;i++){
-    const ci=bands[i];
-    if(ci==null||ci<0||ci>=COLORS.length) continue;
-    const c=COLORS[ci];
     const x=startX+i*gap;
     const isLast=(i===nbBands-1);
     const bx=isLast?(bodyX+bodyW-20-bandW):x;
-    html+=`<rect x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="${c.hex}" stroke="${c.border}" stroke-width="1" opacity="0.95"/>`;
+
+    if(bandColorOverrides){
+      // Mode composition : anneau coloré si choisi, vierge sinon
+      const ci=bandColorOverrides[i];
+      if(ci!=null&&ci>=0&&ci<COLORS.length){
+        const c=COLORS[ci];
+        html+=`<rect id="svgband-${i}" x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="${c.hex}" stroke="${c.border}" stroke-width="1" opacity="0.95"/>`;
+      } else {
+        // Anneau vierge : rectangle semi-transparent avec pointillé
+        html+=`<rect id="svgband-${i}" x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+      }
+    } else {
+      // Mode lecture : affiche les vraies couleurs
+      const ci=bands[i];
+      if(ci==null||ci<0||ci>=COLORS.length) continue;
+      const c=COLORS[ci];
+      html+=`<rect id="svgband-${i}" x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="${c.hex}" stroke="${c.border}" stroke-width="1" opacity="0.95"/>`;
+    }
   }
   svg.innerHTML=html;
+}
+
+// Met à jour un seul anneau dans le SVG sans tout redessiner
+function updateSvgBand(bandIdx, colorIdx){
+  const nb=currentQ.resistor.nbBands;
+  const bandW=nb===4?28:nb===5?22:18;
+  const gap=nb===4?42:nb===5?30:24;
+  const bodyX=100,bodyW=300,bodyH=60,bodyY=(120-bodyH)/2;
+  const startX=bodyX+20;
+  const isLast=(bandIdx===nb-1);
+  const bx=isLast?(bodyX+bodyW-20-bandW):(startX+bandIdx*gap);
+
+  const svg=document.getElementById('resistor-svg');
+  let rect=document.getElementById('svgband-'+bandIdx);
+  if(!rect){
+    rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('id','svgband-'+bandIdx);
+    svg.appendChild(rect);
+  }
+  rect.setAttribute('x',bx);
+  rect.setAttribute('y',bodyY+4);
+  rect.setAttribute('width',bandW);
+  rect.setAttribute('height',bodyH-8);
+  rect.setAttribute('rx','3');
+  rect.setAttribute('stroke-width','1');
+  rect.removeAttribute('stroke-dasharray');
+
+  if(colorIdx!=null&&colorIdx>=0&&colorIdx<COLORS.length){
+    const c=COLORS[colorIdx];
+    rect.setAttribute('fill',c.hex);
+    rect.setAttribute('stroke',c.border);
+    rect.setAttribute('opacity','0.95');
+    // Petite animation flash
+    rect.style.transition='opacity 0.15s';
+    rect.style.opacity='0.5';
+    setTimeout(()=>{rect.style.opacity='0.95';},80);
+  } else {
+    rect.setAttribute('fill','rgba(255,255,255,0.08)');
+    rect.setAttribute('stroke','rgba(255,255,255,0.3)');
+    rect.setAttribute('stroke-dasharray','4 3');
+    rect.setAttribute('opacity','1');
+  }
 }
 
 // ============================================================
@@ -933,10 +1035,11 @@ function renderBandSelectors(){
 }
 
 function selectBandColor(bandIdx, colorIdx){
-  // Deselect others in same band
   document.querySelectorAll(`.color-btn[data-band="${bandIdx}"]`).forEach(b=>b.classList.remove('selected'));
   const btn=document.querySelector(`.color-btn[data-band="${bandIdx}"][data-ci="${colorIdx}"]`);
   if(btn) btn.classList.add('selected');
+  // Mise à jour en temps réel de l'anneau dans le SVG
+  updateSvgBand(bandIdx, colorIdx);
 }
 
 function getSelectedBands(){
