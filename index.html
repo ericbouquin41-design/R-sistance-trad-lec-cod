@@ -1293,6 +1293,98 @@ body::after {
 .s-groups-tags { display:flex; flex-wrap:wrap; gap:.3rem; margin-top:.25rem; }
 .login-form-back { background:transparent; border:none; color:var(--text2); font-size:.82rem; font-family:var(--font-mono); cursor:pointer; text-decoration:underline; margin-top:.3rem; }
 .login-form-back:hover { color:var(--accent); }
+/* ════════════════════════════════════════
+   FREE MODE SELECTION SCREEN
+   ════════════════════════════════════════ */
+#s-freemode { padding: 1rem 1rem 3rem; gap: 1rem; }
+.fm-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.2rem 1.3rem;
+  width: 100%; max-width: 480px;
+  animation: fadein .2s;
+}
+.fm-section-title {
+  font-family: var(--font-mono); font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--text2); margin-bottom: .9rem;
+  display: flex; align-items: center; gap: .6rem;
+}
+.fm-section-title::after { content:''; flex:1; height:1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+/* Exercise type grid */
+.fm-type-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: .6rem;
+}
+.fm-type-btn {
+  display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  padding: .85rem .5rem; border-radius: 10px;
+  border: 2px solid var(--border); background: var(--bg3);
+  cursor: pointer; transition: all .2s;
+}
+.fm-type-btn:hover { border-color: var(--border2); transform: translateY(-2px); }
+.fm-type-btn.active {
+  border-color: var(--accent); background: rgba(245,166,35,.1);
+  box-shadow: 0 0 0 1px var(--accent), var(--glow-a);
+}
+.fm-type-icon { font-size: 1.6rem; }
+.fm-type-label { font-family: var(--font-mono); font-size: .7rem; color: var(--text2); text-align: center; }
+.fm-type-btn.active .fm-type-label { color: var(--accent); font-weight: 700; }
+
+/* Params grid */
+.fm-params-grid { display: flex; flex-direction: column; gap: .8rem; }
+.fm-param label {
+  font-family: var(--font-mono); font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--text2); display: block; margin-bottom: .4rem;
+}
+
+/* Band buttons */
+.fm-band-btns { display: flex; gap: .5rem; }
+.fm-band-btn {
+  width: 44px; height: 36px; border-radius: 8px;
+  border: 2px solid var(--border2); background: var(--bg3);
+  font-family: var(--font-head); font-size: 1rem; font-weight: 700;
+  color: var(--text2); cursor: pointer; transition: all .18s;
+}
+.fm-band-btn.active { border-color: var(--accent); background: rgba(245,166,35,.12); color: var(--accent); }
+.fm-band-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* Stepper */
+.fm-stepper {
+  display: flex; align-items: center; gap: .6rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: .25rem .5rem; width: fit-content;
+}
+.fm-stepper button {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--border2); background: var(--bg4);
+  color: var(--text); font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; font-weight: 700;
+}
+.fm-stepper button:hover { border-color: var(--accent); color: var(--accent); background: rgba(245,166,35,.08); }
+.fm-stepper span {
+  font-family: var(--font-head); font-size: 1.1rem; font-weight: 700;
+  color: var(--accent); min-width: 32px; text-align: center;
+}
+
+/* Direction / series buttons */
+.fm-dir-btns { display: flex; gap: .4rem; flex-wrap: wrap; }
+.fm-dir-btn {
+  padding: .35rem .8rem; border-radius: 7px;
+  border: 1px solid var(--border2); background: var(--bg3);
+  font-family: var(--font-mono); font-size: .78rem; color: var(--text2);
+  cursor: pointer; transition: all .18s;
+}
+.fm-dir-btn:hover { border-color: var(--border2); color: var(--text); }
+.fm-dir-btn.active { border-color: var(--accent); background: rgba(245,166,35,.1); color: var(--accent); font-weight: 700; }
+
+/* Launch button */
+.fm-start-btn {
+  width: 100%; max-width: 480px; padding: 1rem;
+  font-size: 1.1rem; letter-spacing: .08em;
+  margin-top: .5rem;
+}
 </style>
 </head>
 <body>
@@ -1626,6 +1718,8 @@ body::after {
           <div style="display:flex;gap:.4rem">
             <button class="mode-opt active" id="es-series-E12" onclick="selectESSeries('E12')">E12</button>
             <button class="mode-opt" id="es-series-E24" onclick="selectESSeries('E24')">E24</button>
+            <button class="mode-opt" id="es-series-E48" onclick="selectESSeries('E48')">E48</button>
+            <button class="mode-opt" id="es-series-E96" onclick="selectESSeries('E96')">E96</button>
           </div>
         </div>
         <div class="settings-row">
@@ -1681,7 +1775,7 @@ body::after {
     <div id="pm-group-selector" style="display:none">
       <select class="select-input" id="pm-group-select" onchange="loadStudentParcours()" style="font-size:.82rem"></select>
     </div>
-    <button class="btn-secondary" onclick="startFreeMode()" style="font-size:.78rem;padding:.35rem .8rem">🎮 Libre</button>
+    <button class="btn-secondary" onclick="showFreeModeScreen()" style="font-size:.78rem;padding:.35rem .8rem">🎮 Libre</button>
   </div>
 
   <!-- PLAYER CARD -->
@@ -1715,11 +1809,129 @@ body::after {
   </div>
 </div>
 
-<!-- ===== EXERCISE + RESULTS screens (unchanged from v4) ===== -->
+<!-- ===== SCREEN: FREE MODE SELECTION ===== -->
+<div class="screen" id="s-freemode">
+  <div class="pm-topbar">
+    <button class="back-btn" id="fm-back-btn" onclick="freeModeback()">← Retour</button>
+    <span style="font-family:var(--font-head);color:var(--accent);font-size:1.1rem;font-weight:700;letter-spacing:.04em">🎮 Entraînement libre</span>
+    <div style="width:60px"></div>
+  </div>
+
+  <div class="fm-card">
+    <div class="fm-section-title">Type d'exercice</div>
+    <div class="fm-type-grid">
+      <div class="fm-type-btn active" data-mode="both"    onclick="selectFMMode(this,'both')">    <span class="fm-type-icon">🔄</span><span class="fm-type-label">Mixte</span></div>
+      <div class="fm-type-btn" data-mode="read"           onclick="selectFMMode(this,'read')">    <span class="fm-type-icon">📖</span><span class="fm-type-label">Lecture</span></div>
+      <div class="fm-type-btn" data-mode="compose"        onclick="selectFMMode(this,'compose')"> <span class="fm-type-icon">🎨</span><span class="fm-type-label">Composition</span></div>
+      <div class="fm-type-btn" data-mode="flashcard"      onclick="selectFMMode(this,'flashcard')"><span class="fm-type-icon">⚡</span><span class="fm-type-label">Flash Cards</span></div>
+      <div class="fm-type-btn" data-mode="reflexe"        onclick="selectFMMode(this,'reflexe')"> <span class="fm-type-icon">🎯</span><span class="fm-type-label">Réflexe</span></div>
+      <div class="fm-type-btn" data-mode="eseries"        onclick="selectFMMode(this,'eseries')"> <span class="fm-type-icon">📐</span><span class="fm-type-label">Série E</span></div>
+    </div>
+  </div>
+
+  <!-- Options standard (lecture/compo/mixte) -->
+  <div class="fm-card" id="fm-opts-standard">
+    <div class="fm-section-title">Paramètres</div>
+    <div class="fm-params-grid">
+      <div class="fm-param">
+        <label>Bandes</label>
+        <div class="fm-band-btns">
+          <button class="fm-band-btn active" data-band="4" onclick="toggleFMBand(this,4)">4</button>
+          <button class="fm-band-btn active" data-band="5" onclick="toggleFMBand(this,5)">5</button>
+          <button class="fm-band-btn" data-band="6" onclick="toggleFMBand(this,6)">6</button>
+        </div>
+      </div>
+      <div class="fm-param">
+        <label>Questions</label>
+        <div class="fm-stepper">
+          <button onclick="stepFMParam('nbQ',-5)">−</button>
+          <span id="fm-nbQ">10</span>
+          <button onclick="stepFMParam('nbQ',5)">+</button>
+        </div>
+      </div>
+      <div class="fm-param">
+        <label>Timer (s)</label>
+        <div class="fm-stepper">
+          <button onclick="stepFMParam('timer',-5)">−</button>
+          <span id="fm-timer">0</span>
+          <button onclick="stepFMParam('timer',5)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options réflexe -->
+  <div class="fm-card" id="fm-opts-reflexe" style="display:none">
+    <div class="fm-section-title">Paramètres Réflexe</div>
+    <div class="fm-params-grid">
+      <div class="fm-param">
+        <label>Questions</label>
+        <div class="fm-stepper">
+          <button onclick="stepFMParam('reflexNb',-5)">−</button>
+          <span id="fm-reflexNb">20</span>
+          <button onclick="stepFMParam('reflexNb',5)">+</button>
+        </div>
+      </div>
+      <div class="fm-param">
+        <label>Temps/q (s)</label>
+        <div class="fm-stepper">
+          <button onclick="stepFMParam('reflexTimer',-1)">−</button>
+          <span id="fm-reflexTimer">3</span>
+          <button onclick="stepFMParam('reflexTimer',1)">+</button>
+        </div>
+      </div>
+      <div class="fm-param">
+        <label>Direction</label>
+        <div class="fm-dir-btns">
+          <button class="fm-dir-btn active" data-dir="fwd" onclick="selectFMDir(this,'fwd')">🎨→🔢</button>
+          <button class="fm-dir-btn" data-dir="inv" onclick="selectFMDir(this,'inv')">🔢→🎨</button>
+          <button class="fm-dir-btn" data-dir="mix" onclick="selectFMDir(this,'mix')">🔀 Mix</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options série E -->
+  <div class="fm-card" id="fm-opts-eseries" style="display:none">
+    <div class="fm-section-title">Paramètres Série E</div>
+    <div class="fm-params-grid">
+      <div class="fm-param">
+        <label>Série</label>
+        <div class="fm-dir-btns">
+          <button class="fm-dir-btn active" data-es="E12" onclick="selectFMES(this,'E12')">E12</button>
+          <button class="fm-dir-btn" data-es="E24" onclick="selectFMES(this,'E24')">E24</button>
+          <button class="fm-dir-btn" data-es="E48" onclick="selectFMES(this,'E48')">E48</button>
+          <button class="fm-dir-btn" data-es="E96" onclick="selectFMES(this,'E96')">E96</button>
+        </div>
+      </div>
+      <div class="fm-param">
+        <label>Questions</label>
+        <div class="fm-stepper">
+          <button onclick="stepFMParam('esNb',-5)">−</button>
+          <span id="fm-esNb">15</span>
+          <button onclick="stepFMParam('esNb',5)">+</button>
+        </div>
+      </div>
+      <div class="fm-param">
+        <label>Temps/q (s)</label>
+        <div class="fm-stepper">
+          <button onclick="stepFMParam('esTimer',-1)">−</button>
+          <span id="fm-esTimer">6</span>
+          <button onclick="stepFMParam('esTimer',1)">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-primary fm-start-btn" onclick="launchFreeMode()">▶ Lancer l'exercice</button>
+</div>
+
+<!-- ===== EXERCISE + RESULTS screens ===== -->
 <div class="screen" id="s-exercise">
   <div id="exam-banner" class="exam-banner" style="display:none">🔒 MODE EXAMEN — Aide et réécoute désactivées</div>
   <div class="ex-topbar">
     <button class="back-btn" onclick="confirmQuit()">✕ Quitter</button>
+    <div class="ex-progress">
       <div class="progress-track"><div class="progress-fill" id="ex-progress-fill" style="width:0%"></div></div>
       <span class="progress-label" id="ex-progress-label">0/10</span>
     </div>
@@ -1745,10 +1957,10 @@ body::after {
       <div class="read-field">
         <label>Tolérance</label>
         <select class="tol-select" id="read-tol-select">
-          <option value="1">±1% (brun)</option><option value="2">±2% (rouge)</option>
-          <option value="0.5">±0.5% (vert)</option><option value="0.25">±0.25% (bleu)</option>
-          <option value="0.1">±0.1% (violet)</option><option value="0.05">±0.05% (gris)</option>
-          <option value="5">±5% (or)</option><option value="10">±10% (argent)</option>
+          <option value="10">±10% (argent) — E12</option>
+          <option value="5">±5% (or) — E24</option>
+          <option value="2">±2% (rouge) — E48</option>
+          <option value="1">±1% (brun) — E96</option>
         </select>
       </div>
       <div class="read-field" id="coeff-field" style="display:none">
@@ -1980,13 +2192,16 @@ const E12=[1.0,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
 const E24=[1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
 const E48=[1.00,1.05,1.10,1.15,1.21,1.27,1.33,1.40,1.47,1.54,1.62,1.69,1.78,1.87,1.96,2.05,2.15,2.26,2.37,2.49,2.61,2.74,2.87,3.01,3.16,3.32,3.48,3.65,3.83,4.02,4.22,4.42,4.64,4.87,5.11,5.36,5.62,5.90,6.19,6.49,6.81,7.15,7.50,7.87,8.25,8.66,9.09,9.53];
 const E96=[1.00,1.02,1.05,1.07,1.10,1.13,1.15,1.18,1.21,1.24,1.27,1.30,1.33,1.37,1.40,1.43,1.47,1.50,1.54,1.58,1.62,1.65,1.69,1.74,1.78,1.82,1.87,1.91,1.96,2.00,2.05,2.10,2.15,2.21,2.26,2.32,2.37,2.43,2.49,2.55,2.61,2.67,2.74,2.80,2.87,2.94,3.01,3.09,3.16,3.24,3.32,3.40,3.48,3.57,3.65,3.74,3.83,3.92,4.02,4.12,4.22,4.32,4.42,4.53,4.64,4.75,4.87,4.99,5.11,5.23,5.36,5.49,5.62,5.76,5.90,6.04,6.19,6.34,6.49,6.65,6.81,6.98,7.15,7.32,7.50,7.68,7.87,8.06,8.25,8.45,8.66,8.87,9.09,9.31,9.53,9.76];
-const E192=[1.00,1.01,1.02,1.04,1.05,1.06,1.07,1.09,1.10,1.11,1.13,1.14,1.15,1.17,1.18,1.20,1.21,1.23,1.24,1.26,1.27,1.29,1.30,1.32,1.33,1.35,1.37,1.38,1.40,1.42,1.43,1.45,1.47,1.49,1.50,1.52,1.54,1.56,1.58,1.60,1.62,1.64,1.65,1.67,1.69,1.72,1.74,1.76,1.78,1.80,1.82,1.84,1.87,1.89,1.91,1.93,1.96,1.98,2.00,2.03,2.05,2.08,2.10,2.13,2.15,2.18,2.21,2.23,2.26,2.29,2.32,2.34,2.37,2.40,2.43,2.46,2.49,2.52,2.55,2.58,2.61,2.64,2.67,2.71,2.74,2.77,2.80,2.84,2.87,2.91,2.94,2.98,3.01,3.05,3.09,3.12,3.16,3.20,3.24,3.28,3.32,3.36,3.40,3.44,3.48,3.52,3.57,3.61,3.65,3.70,3.74,3.79,3.83,3.88,3.92,3.97,4.02,4.07,4.12,4.17,4.22,4.27,4.32,4.37,4.42,4.48,4.53,4.59,4.64,4.70,4.75,4.81,4.87,4.93,4.99,5.05,5.11,5.17,5.23,5.30,5.36,5.42,5.49,5.56,5.62,5.69,5.76,5.83,5.90,5.97,6.04,6.12,6.19,6.26,6.34,6.42,6.49,6.57,6.65,6.73,6.81,6.90,6.98,7.06,7.15,7.23,7.32,7.41,7.50,7.59,7.68,7.77,7.87,7.96,8.06,8.16,8.25,8.35,8.45,8.56,8.66,8.76,8.87,8.98,9.09,9.20,9.31,9.42,9.53,9.65,9.76,9.88];
-const TOL_TO_SERIES={10:E12,5:E24,2:E48,1:E96,0.5:E192,0.25:E192,0.1:E192,0.05:E192};
+// 4 bandes: ±10%→E12, ±5%→E24 | 5-6 bandes: ±5%→E24, ±2%→E48, ±1%→E96
+const TOL_TO_SERIES={10:E12, 5:E24, 2:E48, 1:E96};
 const DECADES=[1,10,100,1000,10000,100000,1000000,10000000];
-const TOL_COLORS_4=[COLORS[10],COLORS[11],COLORS[1],COLORS[2],COLORS[5],COLORS[6],COLORS[7],COLORS[8]];
+// Tolérance 4 bandes: Or=±5%, Argent=±10%
+const TOL_COLORS_4=[COLORS[10],COLORS[11]];
+// Tolérance 5-6 bandes: Or=±5%, Rouge=±2%, Brun=±1%
+const TOL_COLORS_56=[COLORS[10],COLORS[2],COLORS[1]];
 const COEFF_COLORS=[COLORS[1],COLORS[2],COLORS[3],COLORS[4]];
 const DIGIT_COLORS=COLORS.filter(c=>c.digit!==null);
-const ES_SERIES={E12,E24};
+const ES_SERIES={E12,E24,E48,E96};
 // ============================================================
 // STATE
 // ============================================================
@@ -2348,7 +2563,6 @@ function renderParcoursMap(steps, userId, groupId){
     path.appendChild(wrap);
   });
 }
-}
 
 function showStepPopup(step, idx, state, sp, groupId){
   const ICONS={read:'📖',compose:'🎨',both:'🔄',flashcard:'⚡',reflexe:'🎯',eseries:'📐'};
@@ -2426,7 +2640,10 @@ function launchStep(step, idx, groupId){
 
 function quitToMap(){
   stopTimer(); stopReflexe(); stopESeries();
-  goHome();
+  if(currentRole==='student'&&currentUser){
+    if(currentStepIdx>=0&&currentGroupId) showStudentParcours();
+    else showFreeModeScreen();
+  } else goHome();
 }
 function confirmQuit(){
   openModal(`
@@ -2445,11 +2662,90 @@ function confirmQuit(){
     </div>`);
 }
 
-function startFreeMode(){
+// Free mode params state
+let fmParams={mode:'both',bands:[4,5],nbQ:10,timer:0,reflexNb:20,reflexTimer:3,reflexDir:'fwd',esSeries:'E12',esNb:15,esTimer:6};
+
+function showFreeModeScreen(){
+  // Restore saved prefs
+  const saved=JSON.parse(localStorage.getItem('rp_freemode')||'{}');
+  Object.assign(fmParams,saved);
+  // Update UI
+  document.querySelectorAll('.fm-type-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===fmParams.mode));
+  updateFMOptions();
+  // Band buttons
+  document.querySelectorAll('.fm-band-btn').forEach(b=>b.classList.toggle('active',fmParams.bands.includes(parseInt(b.dataset.band))));
+  // Steppers
+  ['nbQ','timer','reflexNb','reflexTimer','esNb','esTimer'].forEach(k=>{const el=document.getElementById('fm-'+k);if(el)el.textContent=fmParams[k];});
+  // Dir buttons
+  document.querySelectorAll('.fm-dir-btn[data-dir]').forEach(b=>b.classList.toggle('active',b.dataset.dir===fmParams.reflexDir));
+  document.querySelectorAll('.fm-dir-btn[data-es]').forEach(b=>b.classList.toggle('active',b.dataset.es===fmParams.esSeries));
+  showScreen('s-freemode');
+}
+function freeModeback(){
+  // Go back to parcours if student has groups, else to login
+  if(currentRole==='student'&&currentUser&&(currentUser.groupIds||[]).length>0) showStudentParcours();
+  else goHome();
+}
+function updateFMOptions(){
+  const m=fmParams.mode;
+  document.getElementById('fm-opts-standard').style.display=['read','compose','both','flashcard'].includes(m)?'block':'none';
+  document.getElementById('fm-opts-reflexe').style.display=m==='reflexe'?'block':'none';
+  document.getElementById('fm-opts-eseries').style.display=m==='eseries'?'block':'none';
+}
+function selectFMMode(el,mode){
+  fmParams.mode=mode;
+  document.querySelectorAll('.fm-type-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  updateFMOptions();
+  saveFMParams();
+}
+function toggleFMBand(el,band){
+  if(fmParams.bands.includes(band)){
+    if(fmParams.bands.length===1) return; // keep at least one
+    fmParams.bands=fmParams.bands.filter(b=>b!==band);
+    el.classList.remove('active');
+  } else {
+    fmParams.bands.push(band);
+    el.classList.add('active');
+  }
+  saveFMParams();
+}
+function stepFMParam(key,delta){
+  const mins={nbQ:5,timer:0,reflexNb:5,reflexTimer:1,esNb:5,esTimer:2};
+  const maxs={nbQ:50,timer:60,reflexNb:60,reflexTimer:15,esNb:50,esTimer:30};
+  fmParams[key]=Math.min(maxs[key],Math.max(mins[key],(fmParams[key]||0)+delta));
+  const el=document.getElementById('fm-'+key);
+  if(el) el.textContent=fmParams[key];
+  saveFMParams();
+}
+function selectFMDir(el,dir){
+  fmParams.reflexDir=dir;
+  document.querySelectorAll('.fm-dir-btn[data-dir]').forEach(b=>b.classList.toggle('active',b.dataset.dir===dir));
+  saveFMParams();
+}
+function selectFMES(el,s){
+  fmParams.esSeries=s;
+  document.querySelectorAll('.fm-dir-btn[data-es]').forEach(b=>b.classList.toggle('active',b.dataset.es===s));
+  saveFMParams();
+}
+function saveFMParams(){localStorage.setItem('rp_freemode',JSON.stringify(fmParams));}
+function launchFreeMode(){
   currentStepIdx=-1;
-  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
-  Object.assign(settings,saved);
+  settings.exerciseMode=fmParams.mode;
+  settings.bands=fmParams.bands;
+  settings.nbQ=fmParams.nbQ;
+  settings.timer=fmParams.timer;
+  settings.reflexNb=fmParams.reflexNb;
+  settings.reflexTimer=fmParams.reflexTimer;
+  settings.reflexDir=fmParams.reflexDir;
+  settings.esSeries=fmParams.esSeries;
+  settings.esNb=fmParams.esNb;
+  settings.esTimer=fmParams.esTimer;
+  settings.esQtypes={rank:true,find:true,standard:true,next:true};
   startExercise();
+}
+function startFreeMode(){
+  showFreeModeScreen();
 }
 
 function retryCurrentStep(){
@@ -2952,7 +3248,7 @@ function buildStepConfigHTML(type){
     html+=`<div class="step-config-item" style="grid-column:span 2"><label>Direction</label><select id="sc-reflexDir"><option value="fwd">🎨→🔢 Couleur→Chiffre</option><option value="inv">🔢→🎨 Chiffre→Couleur</option><option value="mix">🔀 Mix</option></select></div>`;
   }
   if(type==='eseries'){
-    html+=`<div class="step-config-item"><label>Série</label><select id="sc-esSeries"><option value="E12">E12</option><option value="E24">E24</option></select></div>`;
+    html+=`<div class="step-config-item"><label>Série</label><select id="sc-esSeries"><option value="E12">E12 (±10%)</option><option value="E24">E24 (±5%)</option><option value="E48">E48 (±2%)</option><option value="E96">E96 (±1%)</option></select></div>`;
     html+=`<div class="step-config-item"><label>Questions</label><input id="sc-esNb" type="number" min="5" max="30" value="10"></div>`;
     html+=`<div class="step-config-item"><label>Temps/question (s)</label><input id="sc-esTimer" type="number" min="2" max="30" value="6"></div>`;
     html+=`<div class="step-config-item" style="grid-column:span 2"><label>Types de questions</label><div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.3rem">
@@ -3100,7 +3396,7 @@ function selectReflexDir(dir){
   settings.reflexDir=dir; localStorage.setItem('rp_settings',JSON.stringify(settings));
 }
 function selectESSeries(s){
-  ['E12','E24'].forEach(k=>{const b=document.getElementById('es-series-'+k);if(b)b.classList.toggle('active',k===s);});
+  ['E12','E24','E48','E96'].forEach(k=>{const b=document.getElementById('es-series-'+k);if(b)b.classList.toggle('active',k===s);});
   settings.esSeries=s; localStorage.setItem('rp_settings',JSON.stringify(settings));
 }
 function saveSettings(){
@@ -3170,7 +3466,16 @@ function updateTimerDisplay(){
 // ============================================================
 // RESISTOR EXERCISE ENGINE (read / compose / both)
 // ============================================================
-function pickTolForBands(nb){return nb===4?(Math.random()<0.6?5:10):[1,1,1,2,2,0.5,0.25,0.1,0.05][Math.floor(Math.random()*9)];}
+// 4 bandes : ±10% (E12) ou ±5% (E24) — 60% chance d'or
+// 5-6 bandes : ±5% (E24), ±2% (E48), ±1% (E96)
+function pickTolForBands(nb){
+  if(nb===4) return Math.random()<0.6?5:10;
+  // 5 ou 6 bandes : pondéré vers les plus courants
+  const r=Math.random();
+  if(r<0.4) return 5;   // ±5% Or  → E24
+  if(r<0.7) return 2;   // ±2% Rouge → E48
+  return 1;             // ±1% Brun  → E96
+}
 function getSeriesForTol(tol){return TOL_TO_SERIES[tol]||E24;}
 function getValueForTol(tol){
   const series=getSeriesForTol(tol);
@@ -3181,8 +3486,9 @@ function getValueForTol(tol){
 function findMultColor(v){let b=-1,bd=Infinity;COLORS.forEach((c,i)=>{if(c.mult!=null){const d=Math.abs(c.mult-v);if(d<bd){bd=d;b=i;}}});return b;}
 function valueToColor(val,nb){
   const tol=pickTolForBands(nb);
-  const tolColors=TOL_COLORS_4;
-  const tolColor=tolColors.find(c=>c.tol===tol)||tolColors[0];
+  // Choisir la bonne couleur de tolérance selon nb bandes
+  const tolPalette=nb===4?TOL_COLORS_4:TOL_COLORS_56;
+  const tolColor=tolPalette.find(c=>c.tol===tol)||tolPalette[0];
   const tolIdx=COLORS.indexOf(tolColor);
   if(nb===4){let v=val,m=0;while(v>=100){v/=10;m++;}while(v<10&&v>0){v*=10;m--;}v=Math.round(v);return{bands:[COLORS.findIndex(c=>c.digit===Math.floor(v/10)),COLORS.findIndex(c=>c.digit===Math.floor(v%10)),findMultColor(Math.pow(10,m)),tolIdx],value:val,tol,coeff:null,nbBands:4};}
   if(nb===5){let v=val,m=0;while(v>=1000){v/=10;m++;}while(v<100&&v>0){v*=10;m--;}v=Math.round(v);return{bands:[COLORS.findIndex(c=>c.digit===Math.floor(v/100)),COLORS.findIndex(c=>c.digit===Math.floor((v%100)/10)),COLORS.findIndex(c=>c.digit===Math.floor(v%10)),findMultColor(Math.pow(10,m)),tolIdx],value:val,tol,coeff:null,nbBands:5};}
@@ -3204,8 +3510,7 @@ function generateQuestion(){
 }
 
 function startExercise(){
-  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
-  if(saved.exerciseMode) settings.exerciseMode=saved.exerciseMode;
+  // Ne pas écraser settings depuis localStorage — déjà définis par l'appelant
   if(settings.exerciseMode==='flashcard'){startFlashCards();return;}
   if(settings.exerciseMode==='reflexe'){startReflexe();return;}
   if(settings.exerciseMode==='eseries'){startESeries();return;}
@@ -3527,8 +3832,6 @@ function buildReflexeQuestions(nb,dir){
   return qs;
 }
 function startReflexe(){
-  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');
-  Object.assign(settings,saved);
   reflexeState={questions:buildReflexeQuestions(settings.reflexNb||20,settings.reflexDir||'fwd'),idx:0,score:0,streak:0,bestStreak:0,results:[],interval:null,arcInterval:null,timeLeft:settings.reflexTimer||3,totalTime:settings.reflexTimer||3,direction:settings.reflexDir||'fwd',responseTimes:[]};
   buildReflexeDigitGrid();buildReflexeColorGrid();
   showScreen('s-reflexe');loadReflexeQuestion();
@@ -3648,8 +3951,31 @@ function showReflexeResults(){
 // ============================================================
 // E-SERIES MODE
 // ============================================================
-function formatESValue(v){const s=v.toFixed(v===Math.floor(v)?0:1);return s;}
-function generateFakeValue(series){const i=Math.floor(Math.random()*(series.length-1));const a=series[i],b=series[i+1];const cands=[];for(let d=1;d<=9;d++){const v=Math.round((a+(b-a)*d/10)*10)/10;if(!series.includes(v))cands.push(v);}return cands.length?cands[Math.floor(Math.random()*cands.length)]:Math.round((a+b)/2*10)/10;}
+// Multiplicateur d'affichage pour la série E — ×10 plus naturel en atelier
+const ES_DISPLAY_MULT = 10;
+function formatESValue(v){
+  const displayed = v * ES_DISPLAY_MULT;
+  // Afficher sans décimale si entier, sinon 1 décimale
+  return displayed === Math.floor(displayed)
+    ? displayed.toFixed(0)
+    : displayed.toFixed(1);
+}
+function generateFakeValue(series){
+  // Construit l'ensemble de toutes les valeurs standard (arrondi 1 décimale)
+  // pour éviter de proposer une valeur vraie comme "fausse"
+  const allStd=new Set([...E12,...E24,...E48,...E96].map(v=>Math.round(v*10)));
+  // Collecte toutes les fausses valeurs plausibles sur tous les intervalles
+  const cands=[];
+  for(let i=0;i<series.length-1;i++){
+    const a=series[i],b=series[i+1];
+    for(let d=1;d<=9;d++){
+      const v=Math.round((a+(b-a)*d/10)*10)/10;
+      if(!allStd.has(Math.round(v*10))) cands.push(v);
+    }
+  }
+  if(!cands.length) return 1.4; // fallback de sécurité (jamais atteint en pratique)
+  return cands[Math.floor(Math.random()*cands.length)];
+}
 function generateQCMOptions(series,ci){const correct=series[ci];const pool=series.filter((_,i)=>i!==ci).sort((a,b)=>Math.abs(a-correct)-Math.abs(b-correct)).slice(0,6);const distractors=[];while(distractors.length<3&&pool.length)distractors.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);return [correct,...distractors].sort(()=>Math.random()-.5);}
 function buildESQuestions(series,seriesName,nb,qtypes){
   const qs=[],enabled=Object.entries(qtypes).filter(([,v])=>v).map(([k])=>k);
@@ -3671,8 +3997,10 @@ function buildESQuestions(series,seriesName,nb,qtypes){
   return qs;
 }
 function startESeries(){
-  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');Object.assign(settings,saved);
-  const seriesName=settings.esSeries||'E12',series=ES_SERIES[seriesName];
+  // Ne pas écraser settings avec localStorage — les valeurs ont déjà été
+  // définies par launchFreeMode() ou launchStep()
+  const seriesName=settings.esSeries||'E12', series=ES_SERIES[seriesName];
+  if(!series){console.error('Série inconnue:',seriesName);return;}
   esState={questions:buildESQuestions(series,seriesName,settings.esNb||15,settings.esQtypes||{rank:true,find:true,standard:true,next:true}),idx:0,score:0,streak:0,bestStreak:0,results:[],arcInterval:null,timeLeft:settings.esTimer||6,totalTime:settings.esTimer||6,responseTimes:[],seriesName,series,valueErrors:{}};
   document.getElementById('es-badge').textContent=seriesName;
   buildESRefTable(series,seriesName,-1);
@@ -3680,10 +4008,10 @@ function startESeries(){
 }
 function buildESRefTable(series,sn,hi){
   const tbl=document.getElementById('es-ref-table');const cols=Math.min(series.length,12);
-  let html=`<thead><tr><th>${sn}</th>`;for(let i=0;i<cols;i++)html+=`<th>${i+1}</th>`;html+='</tr></thead><tbody><tr><td style="color:var(--text2);font-size:.7rem">×1</td>';
+  let html=`<thead><tr><th>${sn}</th>`;for(let i=0;i<cols;i++)html+=`<th>${i+1}</th>`;html+='</tr></thead><tbody><tr><td style="color:var(--accent);font-size:.7rem;font-weight:700">×10</td>';
   for(let i=0;i<cols;i++)html+=`<td class="${i===hi?'highlight':''}">${formatESValue(series[i])}</td>`;
   html+='</tr>';
-  if(series.length>12){html+='<tr><td style="color:var(--text2);font-size:.7rem">×1</td>';for(let i=12;i<series.length;i++)html+=`<td class="${i===hi?'highlight':''}">${formatESValue(series[i])}</td>`;html+='</tr>';}
+  if(series.length>12){html+='<tr><td style="color:var(--accent);font-size:.7rem;font-weight:700">×10</td>';for(let i=12;i<series.length;i++)html+=`<td class="${i===hi?'highlight':''}">${formatESValue(series[i])}</td>`;html+='</tr>';}
   html+='</tbody>';tbl.innerHTML=html;
 }
 function toggleESRef(){const w=document.getElementById('es-ref-table-wrap');const b=document.getElementById('es-ref-toggle');const open=w.classList.toggle('open');b.innerHTML='📋 '+(open?'Masquer la série':'Afficher la série');}
@@ -3702,7 +4030,7 @@ function loadESQuestion(){
     document.getElementById('es-q-type').textContent='Rang → Valeur';
     document.getElementById('es-q-main').textContent='Quelle est la '+(ords[q.rank-1]||q.rank)+' valeur de la série '+st.seriesName+' ?';
     document.getElementById('es-q-value').textContent='';
-    document.getElementById('es-q-sub').textContent='(× n\'importe quelle décade)';
+    document.getElementById('es-q-sub').textContent='';
     buildESOptionsWidget(q.options,q.correctValue);
   } else if(qt==='find'){
     document.getElementById('es-q-type').textContent='Valeur → Rang';
@@ -3729,7 +4057,13 @@ function loadESQuestion(){
 }
 function buildESOptionsWidget(options,correct){
   const c=document.getElementById('es-options');c.style.display='grid';c.innerHTML='';
-  options.forEach(v=>{const btn=document.createElement('button');btn.className='es-option-btn';btn.innerHTML=`<span>${formatESValue(v)}</span><span class="es-opt-unit">× n</span>`;btn.onclick=()=>answerESQCM(v,correct);c.appendChild(btn);});
+  options.forEach(v=>{
+    const btn=document.createElement('button');
+    btn.className='es-option-btn';
+    btn.innerHTML=`<span>${formatESValue(v)}</span>`;
+    btn.onclick=()=>answerESQCM(v,correct);
+    c.appendChild(btn);
+  });
 }
 function buildESRankGrid(len,correct){
   const g=document.getElementById('es-rank-grid');g.style.display='grid';g.style.gridTemplateColumns=len<=12?'repeat(6,1fr)':'repeat(8,1fr)';g.innerHTML='';
@@ -3886,13 +4220,21 @@ function showHelp(){
   if(settings.examMode)return;
   const nb=currentQ?currentQ.resistor.nbBands:4;
   document.getElementById('help-bands-label').textContent=nb+' bandes';
+  // Tolérances valides selon nb bandes
+  const validTols=nb===4?[5,10]:[5,2,1];
+  const tolSeries={10:'E12',5:'E24',2:'E48',1:'E96'};
   let html=`<table class="color-table"><thead><tr><th>Couleur</th><th>Chiffre</th><th>Multiplicateur</th><th>Tolérance</th>${nb===6?'<th>Coeff.temp.</th>':''}</tr></thead><tbody>`;
-  COLORS.forEach(c=>{html+=`<tr><td><span style="display:inline-block;width:18px;height:18px;border-radius:4px;background:${c.hex};border:1px solid ${c.border};vertical-align:middle;margin-right:5px"></span>${c.name}</td><td>${c.digit!==null?c.digit:'—'}</td><td>${c.mult!=null?'×'+c.mult:'—'}</td><td>${c.tol!=null?'±'+c.tol+'%':'—'}</td>${nb===6?`<td>${c.coeff!=null?c.coeff+'ppm':'—'}</td>`:''}</tr>`;});
+  COLORS.forEach(c=>{
+    // Masquer les tolérances non pertinentes (0.5%, 0.25%, etc.)
+    const tolDisplay=c.tol!=null?(validTols.includes(c.tol)?`±${c.tol}% — ${tolSeries[c.tol]||''}`:null):null;
+    html+=`<tr><td><span style="display:inline-block;width:18px;height:18px;border-radius:4px;background:${c.hex};border:1px solid ${c.border};vertical-align:middle;margin-right:5px"></span>${c.name}</td><td>${c.digit!==null?c.digit:'—'}</td><td>${c.mult!=null?'×'+c.mult:'—'}</td><td>${tolDisplay||'—'}</td>${nb===6?`<td>${c.coeff!=null?c.coeff+'ppm':'—'}</td>`:''}</tr>`;
+  });
   html+='</tbody></table>';
   document.getElementById('help-content').innerHTML=html;
   document.getElementById('help-overlay').classList.add('visible');
 }
 function hideHelp(){document.getElementById('help-overlay').classList.remove('visible');}
+
 
 // ============================================================
 // INIT
