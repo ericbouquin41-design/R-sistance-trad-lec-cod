@@ -1385,6 +1385,59 @@ body::after {
   font-size: 1.1rem; letter-spacing: .08em;
   margin-top: .5rem;
 }
+/* ════════════════════════════════════════
+   BACKUP / RESTORE PANEL
+   ════════════════════════════════════════ */
+.backup-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.2rem 1.3rem;
+  width: 100%; max-width: 900px;
+  display: flex; gap: 1.2rem; align-items: flex-start;
+}
+.backup-card-icon { font-size: 2rem; flex-shrink: 0; margin-top: .1rem; }
+.backup-card-body { flex: 1; }
+.backup-card-title { font-family: var(--font-head); font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: .3rem; letter-spacing: .02em; }
+.backup-card-desc { font-size: .85rem; color: var(--text2); line-height: 1.6; }
+.btn-import-label {
+  display: inline-flex; align-items: center; gap: .5rem;
+  margin-top: .8rem; padding: .6rem 1.4rem;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: var(--font-body); font-size: .9rem;
+  cursor: pointer; transition: all .2s;
+}
+.btn-import-label:hover { border-color: var(--accent); color: var(--accent); background: rgba(245,166,35,.06); }
+.import-preview {
+  margin-top: .8rem; padding: .8rem 1rem;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  display: flex; flex-direction: column; gap: .7rem;
+}
+.import-preview-info { font-size: .84rem; color: var(--text2); line-height: 1.6; font-family: var(--font-mono); }
+.backup-info-box {
+  margin-top: .8rem; padding: .75rem 1rem;
+  background: rgba(245,166,35,.07); border: 1px solid rgba(245,166,35,.2);
+  border-radius: var(--radius-sm); font-size: .84rem; color: var(--text2);
+  width: 100%; max-width: 900px;
+}
+.backup-info-box strong { color: var(--accent); }
+/* Import confirm modal */
+.import-modal-option {
+  display: flex; align-items: flex-start; gap: .8rem;
+  padding: .9rem 1rem; border-radius: 8px; cursor: pointer;
+  border: 2px solid var(--border); background: var(--bg3);
+  transition: all .2s; margin-bottom: .5rem;
+}
+.import-modal-option.selected { border-color: var(--accent); background: rgba(245,166,35,.08); }
+.import-modal-option input[type=radio] { accent-color: var(--accent); margin-top: .15rem; flex-shrink: 0; }
+.import-modal-option .imo-title { font-weight: 600; font-size: .9rem; color: var(--text); margin-bottom: .2rem; }
+.import-modal-option .imo-desc { font-size: .8rem; color: var(--text2); line-height: 1.5; }
+.import-warn {
+  background: rgba(245,74,74,.08); border: 1px solid rgba(245,74,74,.3);
+  border-radius: 8px; padding: .7rem 1rem; margin-bottom: 1rem;
+  font-size: .84rem; color: var(--text2);
+}
+.import-warn strong { color: var(--error); }
 </style>
 </head>
 <body>
@@ -1492,6 +1545,7 @@ body::after {
     <button class="admin-tab" onclick="switchAdminTab('orphans')" id="atab-orphans">👥 Stagiaires orphelins</button>
     <button class="admin-tab" onclick="switchAdminTab('resets')" id="atab-resets">🔑 Réinit. MDP</button>
     <button class="admin-tab" onclick="switchAdminTab('myaccount')" id="atab-myaccount">👤 Mon compte</button>
+    <button class="admin-tab" onclick="switchAdminTab('backup')" id="atab-backup">💾 Sauvegarde</button>
   </div>
 
   <!-- TAB: TRAINERS -->
@@ -1527,6 +1581,37 @@ body::after {
       <div class="btn-row" style="justify-content:flex-end;margin-top:.8rem">
         <button class="btn-save" onclick="saveAdminAccount()">Enregistrer</button>
       </div>
+    </div>
+  </div>
+
+  <!-- TAB: BACKUP -->
+  <div class="admin-tab-panel" id="atp-backup">
+    <p class="section-title">Sauvegarde &amp; Restauration</p>
+    <div class="backup-card">
+      <div class="backup-card-icon">📤</div>
+      <div class="backup-card-body">
+        <div class="backup-card-title">Exporter les données</div>
+        <div class="backup-card-desc">Télécharge un fichier JSON contenant l'intégralité des données : administrateur, formateurs, stagiaires, groupes, parcours et progressions.</div>
+        <button class="btn-primary" style="margin-top:.8rem" onclick="exportBackup()">📥 Télécharger la sauvegarde</button>
+      </div>
+    </div>
+    <div class="backup-card" style="margin-top:.8rem">
+      <div class="backup-card-icon">📂</div>
+      <div class="backup-card-body">
+        <div class="backup-card-title">Importer des données</div>
+        <div class="backup-card-desc">Charge un fichier de sauvegarde JSON. Une confirmation vous sera demandée avant toute modification.</div>
+        <label class="btn-import-label">
+          📂 Choisir un fichier JSON
+          <input type="file" id="import-file-input" accept=".json" onchange="previewImport(event)" style="display:none">
+        </label>
+        <div id="import-preview" style="display:none" class="import-preview">
+          <div class="import-preview-info" id="import-preview-info"></div>
+          <button class="btn-primary" onclick="confirmImport()">✓ Lancer l'import</button>
+        </div>
+      </div>
+    </div>
+    <div class="backup-info-box">
+      <strong>💡 Conseil :</strong> effectuez une sauvegarde régulière. Les données sont dans le navigateur et peuvent être perdues lors d'un nettoyage du cache ou d'un changement d'ordinateur.
     </div>
   </div>
 </div>
@@ -2335,7 +2420,7 @@ function doLogin(){
 // ============================================================
 function showAdminScreen(){showScreen('s-admin');document.getElementById('admin-welcome').textContent='⚙️ '+getAdminAccount().login;switchAdminTab('trainers');}
 function switchAdminTab(tab){
-  ['trainers','orphans','resets','myaccount'].forEach(t=>{
+  ['trainers','orphans','resets','myaccount','backup'].forEach(t=>{
     document.getElementById('atab-'+t).classList.toggle('active',t===tab);
     document.getElementById('atp-'+t).classList.toggle('active',t===tab);
   });
@@ -2343,6 +2428,7 @@ function switchAdminTab(tab){
   else if(tab==='orphans')renderOrphans();
   else if(tab==='resets')renderResetList();
   else if(tab==='myaccount')renderAdminAccount();
+  else if(tab==='backup')renderBackupTab();
 }
 function renderTrainerList(){
   const trainers=getTrainers(),allUsers=getAllUsers().filter(u=>u.role==='student'),allGroups=getAllGroups();
@@ -4241,7 +4327,177 @@ function hideHelp(){document.getElementById('help-overlay').classList.remove('vi
 // ============================================================
 function setLang(l){lang=l;document.getElementById('btn-fr').classList.toggle('active',l==='fr');document.getElementById('btn-en').classList.toggle('active',l==='en');const el=document.getElementById('txt-tagline');if(el)el.textContent=l==='fr'?'Maîtrisez le code couleur des résistances':'Master resistor color codes';}
 // ============================================================
-// MANUALS
+// BACKUP & RESTORE
+// ============================================================
+let importData = null; // données du fichier importé en attente
+
+function renderBackupTab(){
+  // Réinitialiser le panneau import
+  document.getElementById('import-preview').style.display='none';
+  document.getElementById('import-file-input').value='';
+  importData=null;
+}
+
+function exportBackup(){
+  const date=new Date().toISOString().split('T')[0];
+  const data={
+    version:'ResistorPro_v7',
+    exportDate:new Date().toISOString(),
+    admin:getAdminAccount(),
+    trainers:getTrainers(),
+    users:getAllUsers(),
+    groups:getAllGroups(),
+    parcours:getParcours(),
+    progress:getProgress(),
+    settings:JSON.parse(localStorage.getItem('rp_settings')||'{}'),
+    freemode:JSON.parse(localStorage.getItem('rp_freemode')||'{}'),
+  };
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`resistorpro_backup_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function previewImport(evt){
+  const file=evt.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      // Validation basique
+      if(!data.version||!data.exportDate){
+        alert('❌ Fichier invalide — ce n\'est pas une sauvegarde ResistorPro.');
+        return;
+      }
+      importData=data;
+      // Afficher un résumé
+      const trainers=(data.trainers||[]).length;
+      const users=(data.users||[]).filter(u=>u.role==='student').length;
+      const groups=(data.groups||[]).length;
+      const date=data.exportDate.split('T')[0];
+      document.getElementById('import-preview-info').innerHTML=
+        `📅 Date : <strong>${date}</strong><br>`+
+        `🎓 Formateurs : <strong>${trainers}</strong><br>`+
+        `👥 Stagiaires : <strong>${users}</strong><br>`+
+        `🏫 Groupes : <strong>${groups}</strong>`;
+      document.getElementById('import-preview').style.display='flex';
+    }catch(err){
+      alert('❌ Fichier JSON invalide ou corrompu.');
+      importData=null;
+    }
+  };
+  reader.readAsText(file);
+}
+
+function confirmImport(){
+  if(!importData){alert('Aucun fichier chargé.');return;}
+  // Ouvrir la modale de confirmation avec choix écraser/fusionner
+  openModal(`
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>⚠️ Confirmation d'import</h3>
+    <div class="import-warn">
+      <strong>Attention :</strong> cette action va modifier les données de l'application. Choisissez soigneusement le mode d'import.
+    </div>
+    <label class="import-modal-option selected" id="iopt-overwrite" onclick="selectImportMode('overwrite')">
+      <input type="radio" name="import-mode" value="overwrite" checked>
+      <div>
+        <div class="imo-title">🔄 Écraser complètement</div>
+        <div class="imo-desc">Toutes les données actuelles sont supprimées et remplacées par celles du fichier importé. <strong>Action irréversible.</strong></div>
+      </div>
+    </label>
+    <label class="import-modal-option" id="iopt-merge" onclick="selectImportMode('merge')">
+      <input type="radio" name="import-mode" value="merge">
+      <div>
+        <div class="imo-title">🔀 Fusionner</div>
+        <div class="imo-desc">Les données importées s'ajoutent aux données existantes. En cas de conflit d'identifiant, le fichier importé a la priorité.</div>
+      </div>
+    </label>
+    <div class="form-actions" style="margin-top:1rem">
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn-save" onclick="doImport()" style="background:linear-gradient(135deg,var(--error),#c83030)">✓ Confirmer l'import</button>
+    </div>`);
+}
+
+function selectImportMode(mode){
+  document.getElementById('iopt-overwrite').classList.toggle('selected',mode==='overwrite');
+  document.getElementById('iopt-merge').classList.toggle('selected',mode==='merge');
+  const radios=document.querySelectorAll('input[name="import-mode"]');
+  radios.forEach(r=>{if(r.value===mode)r.checked=true;});
+}
+
+function doImport(){
+  if(!importData){closeModal();return;}
+  const mode=document.querySelector('input[name="import-mode"]:checked')?.value||'overwrite';
+  closeModal();
+  if(mode==='overwrite'){
+    // Écraser tout
+    if(importData.admin)  saveAdminAccount(importData.admin);
+    if(importData.trainers) saveTrainers(importData.trainers);
+    if(importData.users)    saveAllUsers(importData.users);
+    if(importData.groups)   saveAllGroups(importData.groups);
+    if(importData.parcours) saveParcours(importData.parcours);
+    if(importData.progress) saveProgress(importData.progress);
+    if(importData.settings) localStorage.setItem('rp_settings',JSON.stringify(importData.settings));
+    if(importData.freemode) localStorage.setItem('rp_freemode',JSON.stringify(importData.freemode));
+  } else {
+    // Fusionner — ajouter sans écraser les existants sauf conflits
+    if(importData.trainers){
+      const existing=getTrainers();
+      const merged=[...existing];
+      (importData.trainers||[]).forEach(t=>{
+        const idx=merged.findIndex(x=>x.id===t.id||x.login===t.login);
+        if(idx>=0) merged[idx]=t; else merged.push(t);
+      });
+      saveTrainers(merged);
+    }
+    if(importData.users){
+      const existing=getAllUsers();
+      const merged=[...existing];
+      (importData.users||[]).forEach(u=>{
+        const idx=merged.findIndex(x=>x.id===u.id||x.login===u.login);
+        if(idx>=0) merged[idx]=u; else merged.push(u);
+      });
+      saveAllUsers(merged);
+    }
+    if(importData.groups){
+      const existing=getAllGroups();
+      const merged=[...existing];
+      (importData.groups||[]).forEach(g=>{
+        const idx=merged.findIndex(x=>x.id===g.id);
+        if(idx>=0) merged[idx]=g; else merged.push(g);
+      });
+      saveAllGroups(merged);
+    }
+    if(importData.parcours){
+      const existing=getParcours();
+      const merged=Object.assign({},existing,importData.parcours);
+      saveParcours(merged);
+    }
+    if(importData.progress){
+      const existing=getProgress();
+      const merged=Object.assign({},existing,importData.progress);
+      saveProgress(merged);
+    }
+  }
+  importData=null;
+  // Confirmation et rafraîchissement
+  document.getElementById('import-preview').style.display='none';
+  document.getElementById('import-file-input').value='';
+  renderTrainerList();
+  // Toast de succès
+  const toast=document.createElement('div');
+  toast.style.cssText='position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--success);color:#000;font-family:var(--font-mono);font-size:.85rem;padding:.7rem 1.5rem;border-radius:8px;z-index:9999;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.3)';
+  toast.textContent='✓ Import réussi !';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),3000);
+}
+
+// ============================================================
+// MANUALS (updated with backup section)
 // ============================================================
 const MANUALS={
   admin:{title:'📘 Manuel Administrateur',sections:[
@@ -4249,7 +4505,17 @@ const MANUALS={
     {id:'trainers',icon:'🎓',title:'Gérer les formateurs',content:`<p>L'onglet <strong>Formateurs</strong> vous permet de créer, modifier et supprimer des comptes formateurs.</p><ul><li><strong>Créer :</strong> cliquez sur <em>+ Nouveau formateur</em>, renseignez le nom, un identifiant unique et un mot de passe. Communiquez-les au formateur.</li><li><strong>Modifier :</strong> bouton ✏️ pour changer le nom, l'identifiant ou le mot de passe.</li><li><strong>Supprimer :</strong> bouton 🗑. Les stagiaires de ce formateur sont <strong>conservés</strong> et apparaissent dans l'onglet Stagiaires orphelins.</li></ul><div class="manual-warn"><strong>Attention :</strong> la suppression d'un formateur est irréversible. Ses groupes et parcours sont supprimés, ses stagiaires conservés.</div>`},
     {id:'orphans',icon:'👥',title:'Stagiaires orphelins',content:`<p>Après suppression d'un formateur, ses stagiaires apparaissent dans cet onglet. Ils peuvent toujours se connecter mais n'ont plus de formateur associé.</p><ul><li>Sélectionnez un formateur dans le menu déroulant.</li><li>Cliquez sur <strong>Affecter</strong> pour rattacher le stagiaire.</li></ul><div class="manual-tip"><strong>Conseil :</strong> réaffectez les stagiaires orphelins rapidement pour qu'ils retrouvent un suivi.</div>`},
     {id:'resets',icon:'🔑',title:'Réinitialiser les mots de passe',content:`<p>L'onglet <strong>Réinit. MDP</strong> liste tous les stagiaires. Vous pouvez réinitialiser n'importe quel mot de passe sans connaître l'ancien.</p><ul><li>Saisissez le nouveau mot de passe dans le champ en face du stagiaire.</li><li>Cliquez sur <strong>🔑 Réinitialiser</strong>. La modification est immédiate.</li><li>Communiquez le nouveau mot de passe au stagiaire.</li></ul>`},
-    {id:'myaccount',icon:'👤',title:'Mon compte',content:`<p>Modifiez votre identifiant et/ou mot de passe administrateur.</p><ul><li>Changez l'identifiant dans le champ <em>Identifiant</em>.</li><li>Pour changer le mot de passe, remplissez les deux champs. Laissez-les vides pour conserver l'actuel.</li><li>Cliquez sur <strong>Enregistrer</strong>.</li></ul><div class="manual-warn"><strong>Attention :</strong> si vous oubliez vos identifiants, la seule solution est d'effacer le localStorage du navigateur.</div>`}
+    {id:'myaccount',icon:'👤',title:'Mon compte',content:`<p>Modifiez votre identifiant et/ou mot de passe administrateur.</p><ul><li>Changez l'identifiant dans le champ <em>Identifiant</em>.</li><li>Pour changer le mot de passe, remplissez les deux champs. Laissez-les vides pour conserver l'actuel.</li><li>Cliquez sur <strong>Enregistrer</strong>.</li></ul><div class="manual-warn"><strong>Attention :</strong> si vous oubliez vos identifiants, la seule solution est d'effacer le localStorage du navigateur.</div>`},
+    {id:'backup',icon:'💾',title:'Sauvegarde & Restauration',content:`<p>L'onglet <strong>💾 Sauvegarde</strong> vous permet d'exporter et d'importer toutes les données de l'application.</p>
+      <ul>
+        <li><strong>Exporter :</strong> télécharge un fichier <em>resistorpro_backup_DATE.json</em> contenant formateurs, stagiaires, groupes, parcours et progressions.</li>
+        <li><strong>Importer :</strong> sélectionnez un fichier exporté. Un résumé s'affiche avant confirmation.</li>
+      </ul>
+      <div class="manual-warn"><strong>⚠️ Deux modes d'import :</strong><br>
+        <strong>Écraser (défaut) :</strong> toutes les données actuelles sont supprimées. Irréversible — sauvegardez d'abord !<br>
+        <strong>Fusionner :</strong> les données s'ajoutent aux existantes. En cas de conflit, le fichier importé a la priorité.
+      </div>
+      <div class="manual-tip"><strong>Conseil :</strong> exportez régulièrement. Les données sont dans le navigateur et peuvent être perdues lors d'un nettoyage du cache.</div>`}
   ]},
   trainer:{title:'📗 Manuel Formateur',sections:[
     {id:'intro',icon:'🎓',title:'Rôle du formateur',content:`<p>Le formateur gère ses stagiaires, groupes et parcours pédagogiques dans un espace cloisonné. Il ne voit pas les données des autres formateurs.</p><div class="manual-schema"><span class="hl">Formateur</span><br>├── Stagiaires<br>├── Groupes (dates, membres)<br>└── Parcours par groupe<br>&nbsp;&nbsp;&nbsp;&nbsp;└── Étapes ordonnées</div>`},
