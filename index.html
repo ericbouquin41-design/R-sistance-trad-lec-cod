@@ -223,8 +223,8 @@ body::after {
 /* ════════════════════════════════════════
    SETUP SCREEN
    ════════════════════════════════════════ */
-#s-setup { justify-content: center; gap: 1.5rem; }
-.setup-card {
+#s-setup { justify-content: center; gap: 1.5rem; min-height: 100vh; padding-top: 3rem; }
+#s-login { justify-content: center; gap: 2.5rem; min-height: 100vh; padding-top: 3rem; }.setup-card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -4552,16 +4552,22 @@ function closeManual(){document.getElementById('manual-overlay').classList.remov
 // ============================================================
 // INIT
 // ============================================================
-(function init(){
-  const theme=localStorage.getItem('rp_theme');
-  if(theme==='light'){lightMode=true;document.body.classList.add('light-mode');document.getElementById('theme-btn').textContent='🌙';}
-  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');if(saved.nbQ)Object.assign(settings,saved);
-  // Fix admin own account button
-  const ab=document.querySelector('#atp-myaccount .btn-save');if(ab)ab.onclick=saveAdminAccount2;
-  // Route
-  const adm=getAdminAccount();
-  if(!adm){showScreen('s-setup');}else{showScreen('s-login');}
-})();
+document.addEventListener('DOMContentLoaded', function init(){
+  try {
+    const theme=localStorage.getItem('rp_theme');
+    if(theme==='light'){lightMode=true;document.body.classList.add('light-mode');document.getElementById('theme-btn').textContent='🌙';}
+    const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');if(saved.nbQ)Object.assign(settings,saved);
+    const ab=document.querySelector('#atp-myaccount .btn-save');if(ab)ab.onclick=saveAdminAccount2;
+    const adm=getAdminAccount();
+    if(!adm){showScreen('s-setup');}else{showScreen('s-login');}
+  } catch(e) {
+    console.error('ResistorPro init error:', e);
+    // Fallback : afficher l'écran de setup même en cas d'erreur
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    const setup=document.getElementById('s-setup');
+    if(setup) setup.classList.add('active');
+  }
+});
 </script>
 </body>
 </html>
