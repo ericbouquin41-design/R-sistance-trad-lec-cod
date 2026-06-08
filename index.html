@@ -3124,19 +3124,20 @@ function saveNewGroup(){
   const dateEnd=document.getElementById('m-gend').value;
   const errEl=document.getElementById('m-err');
   if(!name||!dateStart||!dateEnd){errEl.textContent='Tous les champs sont requis.';errEl.classList.add('visible');return;}
-  const users=getUsers().filter(u=>u.role==='student');
+  const users=getMyUsers();
   const memberIds=users.filter(u=>{const cb=document.getElementById('mg-'+u.id);return cb&&cb.checked;}).map(u=>u.id);
   const gid='g'+Date.now();
-  const groups=getGroups();
-  groups.push({id:gid,name,dateStart,dateEnd,memberIds});
-  saveGroups(groups);
-  // Update user groupIds
-  const allUsers=getUsers();
+  const allGroups=getAllGroups();
+  // Inclure trainerId pour que getMyGroups() retrouve ce groupe
+  allGroups.push({id:gid,name,dateStart,dateEnd,memberIds,trainerId:currentUser.id});
+  saveAllGroups(allGroups);
+  // Mettre à jour groupIds des stagiaires
+  const allUsers=getAllUsers();
   memberIds.forEach(uid=>{
     const u=allUsers.find(x=>x.id===uid);
     if(u&&!(u.groupIds||[]).includes(gid)) u.groupIds=(u.groupIds||[]).concat(gid);
   });
-  saveUsers(allUsers);
+  saveAllUsers(allUsers);
   closeModal(); renderGroupMgmt(); renderTrainerStats(); refreshParcourGroupSelect();
 }
 
