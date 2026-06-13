@@ -223,8 +223,8 @@ body::after {
 /* ════════════════════════════════════════
    SETUP SCREEN
    ════════════════════════════════════════ */
-#s-setup { justify-content: center; gap: 1.5rem; min-height: 100vh; padding-top: 3rem; }
-#s-login { justify-content: center; gap: 2.5rem; min-height: 100vh; padding-top: 3rem; }.setup-card {
+#s-setup { justify-content: center; gap: 1.5rem; }
+.setup-card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -2521,7 +2521,10 @@ function showStudentParcours(){
   sel.innerHTML='';
   myGroups.forEach(g=>{const opt=document.createElement('option');opt.value=g.id;opt.textContent=g.name;sel.appendChild(opt);});
   document.getElementById('pm-group-selector').style.display=myGroups.length>1?'block':'none';
-  currentGroupId=myGroups[0].id; sel.value=currentGroupId;
+  // Conserver le groupe actif si valide, sinon prendre le premier
+  const validGroup=myGroups.find(g=>g.id===currentGroupId);
+  if(!validGroup) currentGroupId=myGroups[0].id;
+  sel.value=currentGroupId;
   // Fill player card
   const LEVEL_NAMES=['🌱 Débutant','🔧 Apprenti','⚙️ Technicien','💡 Expert','🏆 Maître'];
   const LEVEL_BADGES=['🌱','🔧','⚙️','💡','🏆'];
@@ -3124,20 +3127,19 @@ function saveNewGroup(){
   const dateEnd=document.getElementById('m-gend').value;
   const errEl=document.getElementById('m-err');
   if(!name||!dateStart||!dateEnd){errEl.textContent='Tous les champs sont requis.';errEl.classList.add('visible');return;}
-  const users=getMyUsers();
+  const users=getUsers().filter(u=>u.role==='student');
   const memberIds=users.filter(u=>{const cb=document.getElementById('mg-'+u.id);return cb&&cb.checked;}).map(u=>u.id);
   const gid='g'+Date.now();
-  const allGroups=getAllGroups();
-  // Inclure trainerId pour que getMyGroups() retrouve ce groupe
-  allGroups.push({id:gid,name,dateStart,dateEnd,memberIds,trainerId:currentUser.id});
-  saveAllGroups(allGroups);
-  // Mettre à jour groupIds des stagiaires
-  const allUsers=getAllUsers();
+  const groups=getGroups();
+  groups.push({id:gid,name,dateStart,dateEnd,memberIds,trainerId:currentUser.id});
+  saveGroups(groups);
+  // Update user groupIds
+  const allUsers=getUsers();
   memberIds.forEach(uid=>{
     const u=allUsers.find(x=>x.id===uid);
     if(u&&!(u.groupIds||[]).includes(gid)) u.groupIds=(u.groupIds||[]).concat(gid);
   });
-  saveAllUsers(allUsers);
+  saveUsers(allUsers);
   closeModal(); renderGroupMgmt(); renderTrainerStats(); refreshParcourGroupSelect();
 }
 
@@ -4553,22 +4555,16 @@ function closeManual(){document.getElementById('manual-overlay').classList.remov
 // ============================================================
 // INIT
 // ============================================================
-document.addEventListener('DOMContentLoaded', function init(){
-  try {
-    const theme=localStorage.getItem('rp_theme');
-    if(theme==='light'){lightMode=true;document.body.classList.add('light-mode');document.getElementById('theme-btn').textContent='🌙';}
-    const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');if(saved.nbQ)Object.assign(settings,saved);
-    const ab=document.querySelector('#atp-myaccount .btn-save');if(ab)ab.onclick=saveAdminAccount2;
-    const adm=getAdminAccount();
-    if(!adm){showScreen('s-setup');}else{showScreen('s-login');}
-  } catch(e) {
-    console.error('ResistorPro init error:', e);
-    // Fallback : afficher l'écran de setup même en cas d'erreur
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    const setup=document.getElementById('s-setup');
-    if(setup) setup.classList.add('active');
-  }
-});
+(function init(){
+  const theme=localStorage.getItem('rp_theme');
+  if(theme==='light'){lightMode=true;document.body.classList.add('light-mode');document.getElementById('theme-btn').textContent='🌙';}
+  const saved=JSON.parse(localStorage.getItem('rp_settings')||'{}');if(saved.nbQ)Object.assign(settings,saved);
+  // Fix admin own account button
+  const ab=document.querySelector('#atp-myaccount .btn-save');if(ab)ab.onclick=saveAdminAccount2;
+  // Route
+  const adm=getAdminAccount();
+  if(!adm){showScreen('s-setup');}else{showScreen('s-login');}
+})();
 </script>
 </body>
 </html>
