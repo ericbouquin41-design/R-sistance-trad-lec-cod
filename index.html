@@ -829,6 +829,23 @@ body::after {
 .color-btn:hover { transform: scale(1.2); z-index: 2; }
 .color-btn.selected { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,.5); transform: scale(1.12); }
 .color-swatch { width: 100%; height: 100%; border-radius: 4px; }
+/* Effet métallisé or et argent */
+.color-swatch.metallic-gold {
+  background: linear-gradient(135deg, #e8d060 0%, #cfb53b 30%, #f5e080 50%, #b8960a 70%, #e0c840 100%) !important;
+  box-shadow: inset 0 1px 2px rgba(255,255,200,.5), inset 0 -1px 2px rgba(100,70,0,.4);
+}
+.color-swatch.metallic-silver {
+  background: linear-gradient(135deg, #e8e8e8 0%, #b0b0b0 30%, #f0f0f0 50%, #909090 70%, #d0d0d0 100%) !important;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.7), inset 0 -1px 2px rgba(0,0,0,.25);
+}
+.reflex-color-choice.metallic-gold {
+  background: linear-gradient(135deg, #e8d060 0%, #cfb53b 30%, #f5e080 50%, #b8960a 70%, #e0c840 100%) !important;
+  box-shadow: inset 0 2px 4px rgba(255,255,200,.5), inset 0 -2px 4px rgba(100,70,0,.4);
+}
+.reflex-color-choice.metallic-silver {
+  background: linear-gradient(135deg, #e8e8e8 0%, #b0b0b0 30%, #f0f0f0 50%, #909090 70%, #d0d0d0 100%) !important;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,.7), inset 0 -2px 4px rgba(0,0,0,.25);
+}
 
 /* READ MODE */
 .read-answer { display: flex; flex-direction: column; gap: .8rem; width: 100%; max-width: 620px; margin-bottom: 1rem; }
@@ -3666,7 +3683,11 @@ function drawResistor(bands,nb,overrides){
   const bandW=nb===4?28:nb===5?22:18;
   const gap=nb===4?42:nb===5?30:24;
   const startX=bodyX+20;
-  let html=`<defs><linearGradient id="rsbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c8a060"/><stop offset="50%" stop-color="#d4b070"/><stop offset="100%" stop-color="#b08040"/></linearGradient></defs>
+  let html=`<defs>
+    <linearGradient id="rsbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c8a060"/><stop offset="50%" stop-color="#d4b070"/><stop offset="100%" stop-color="#b08040"/></linearGradient>
+    <linearGradient id="grad-or" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e8d060"/><stop offset="30%" stop-color="#cfb53b"/><stop offset="50%" stop-color="#f5e080"/><stop offset="70%" stop-color="#b8960a"/><stop offset="100%" stop-color="#e0c840"/></linearGradient>
+    <linearGradient id="grad-argent" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e8e8e8"/><stop offset="30%" stop-color="#b0b0b0"/><stop offset="50%" stop-color="#f0f0f0"/><stop offset="70%" stop-color="#909090"/><stop offset="100%" stop-color="#d0d0d0"/></linearGradient>
+  </defs>
   <line x1="0" y1="${H/2}" x2="${bodyX}" y2="${H/2}" stroke="#aaa" stroke-width="4"/>
   <line x1="${bodyX+bodyW}" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="#aaa" stroke-width="4"/>
   <rect x="${bodyX}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="18" fill="url(#rsbg)" stroke="#a08040" stroke-width="1.5"/>`;
@@ -3676,12 +3697,13 @@ function drawResistor(bands,nb,overrides){
     const bx=isLast?(bodyX+bodyW-20-bandW):x;
     if(overrides){
       const ci=overrides[i];
-      if(ci!=null&&ci>=0&&ci<COLORS.length){const c=COLORS[ci];html+=`<rect id="svgband-${i}" x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="${c.hex}" stroke="${c.border}" stroke-width="1" opacity=".95"/>`;}
+      if(ci!=null&&ci>=0&&ci<COLORS.length){const c=COLORS[ci];const fill=c.name==='Or'?'url(#grad-or)':c.name==='Argent'?'url(#grad-argent)':c.hex;html+=`<rect id="svgband-${i}" x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="${fill}" stroke="${c.border}" stroke-width="1" opacity=".95"/>`;}
       else html+=`<rect id="svgband-${i}" x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.3)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
     } else {
       const ci=bands[i]; if(ci==null||ci<0||ci>=COLORS.length) continue;
       const c=COLORS[ci];
-      html+=`<rect id="svgband-${i}" x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="${c.hex}" stroke="${c.border}" stroke-width="1" opacity=".95"/>`;
+      const fill=c.name==='Or'?'url(#grad-or)':c.name==='Argent'?'url(#grad-argent)':c.hex;
+      html+=`<rect id="svgband-${i}" x="${bx}" y="${bodyY+4}" width="${bandW}" height="${bodyH-8}" rx="3" fill="${fill}" stroke="${c.border}" stroke-width="1" opacity=".95"/>`;
     }
   }
   svg.innerHTML=html;
@@ -3697,7 +3719,9 @@ function updateSvgBand(bi,ci){
   if(!rect){rect=document.createElementNS('http://www.w3.org/2000/svg','rect');rect.setAttribute('id','svgband-'+bi);svg.appendChild(rect);}
   rect.setAttribute('x',bx);rect.setAttribute('y',bodyY+4);rect.setAttribute('width',bandW);rect.setAttribute('height',bodyH-8);rect.setAttribute('rx','3');rect.setAttribute('stroke-width','1');rect.removeAttribute('stroke-dasharray');
   if(ci!=null&&ci>=0&&ci<COLORS.length){
-    const c=COLORS[ci];rect.setAttribute('fill',c.hex);rect.setAttribute('stroke',c.border);rect.setAttribute('opacity','.95');
+    const c=COLORS[ci];
+    const fill=c.name==='Or'?'url(#grad-or)':c.name==='Argent'?'url(#grad-argent)':c.hex;
+    rect.setAttribute('fill',fill);rect.setAttribute('stroke',c.border);rect.setAttribute('opacity','.95');
     rect.style.opacity='.5';setTimeout(()=>{rect.style.opacity='.95';},80);
     const row=document.getElementById('band-row-'+bi);if(row){row.style.boxShadow='0 0 0 2px var(--accent)';setTimeout(()=>{row.style.boxShadow='';},400);}
   } else {
@@ -3721,7 +3745,8 @@ function renderBandSelectors(){
     avail.forEach(c=>{
       const ci=COLORS.indexOf(c);
       const btn=document.createElement('button');btn.className='color-btn';btn.setAttribute('data-ci',ci);btn.setAttribute('data-band',i);btn.setAttribute('title',c.name);
-      btn.innerHTML=`<div class="color-swatch" style="background:${c.hex};border:1px solid ${c.border}"></div>`;
+      const metallicClass=(c.name==='Or')?'metallic-gold':(c.name==='Argent')?'metallic-silver':'';
+      btn.innerHTML=`<div class="color-swatch ${metallicClass}" style="background:${c.hex};border:1px solid ${c.border}"></div>`;
       btn.onclick=()=>selectBandColor(i,ci);
       palette.appendChild(btn);
     });
@@ -3935,6 +3960,8 @@ function buildReflexeColorGrid(){
     const gi=COLORS.indexOf(c);
     const btn=document.createElement('button');btn.className='reflex-color-choice';btn.id='reflex-color-choice-'+gi;
     btn.style.cssText=`background:${c.hex};border:2px solid ${c.border}`;btn.setAttribute('data-ci',gi);
+    if(c.name==='Or') btn.classList.add('metallic-gold');
+    if(c.name==='Argent') btn.classList.add('metallic-silver');
     btn.innerHTML=`<span class="reflex-color-choice-label">${c.name}</span>`;
     btn.onclick=()=>answerReflexeColor(gi);grid.appendChild(btn);
   });
